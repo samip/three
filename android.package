@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "three",
-    "slug": "my-three",
+    "slug": "three",
     "version": "1.0.0",
     "android": {
       "package": "com.spell.three"
