@@ -1,15 +1,15 @@
-import { Text, View } from "react-native";
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { Canvas } from '@react-three/fiber';
+import Box from '../components/Box'; // Adjust the path as necessary
 
-export default function Index() {
+export default function HomeScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View style={{ flex: 1 }}>
+      <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
+        <ambientLight />
+        <Box />
+      </Canvas>
     </View>
-  );
-}
+    )
+  }
