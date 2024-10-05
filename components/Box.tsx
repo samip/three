@@ -1,22 +1,36 @@
-//Make default box that is a mesh  with a standard material
-import  { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+ import { Gyroscope } from 'expo-sensors';
 
 export default function Box() {
   const ref = useRef<THREE.Mesh>(null!);
+  const rotation = useRef({ x: 0, y: 0, z: 0 });
+
+  useEffect(() => {
+    const subscription = Gyroscope.addListener((data) => {
+      rotation.current.x = data.x ?? 0;
+      rotation.current.y = data.y ?? 0;
+      rotation.current.z = data.z ?? 0;
+    });
+
+    Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useFrame(() => {
     if (ref.current) {
-      ref.current.rotation.x += 0.01;
-      ref.current.rotation.y += 0.01;
+      ref.current.rotation.x += rotation.current.x;
+      ref.current.rotation.y += rotation.current.y;
+      ref.current.rotation.z += rotation.current.z;
     }
   });
 
   return (
-    <mesh 
-    position={[0, 0, 0]}
-    ref={ref}>
+    <mesh position={[0, 0, 0]} ref={ref}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color="blue" />
     </mesh>
