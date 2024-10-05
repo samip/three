@@ -41,10 +41,18 @@ export default function Box() {
     }
   });
 
+  const materials = [
+    new THREE.MeshStandardMaterial({ color: 'red' }),    // Right face
+    new THREE.MeshStandardMaterial({ color: 'green' }),  // Left face
+    new THREE.MeshStandardMaterial({ color: 'blue' }),   // Top face
+    new THREE.MeshStandardMaterial({ color: 'yellow' }), // Bottom face
+    new THREE.MeshStandardMaterial({ color: 'cyan' }),   // Front face
+    new THREE.MeshStandardMaterial({ color: 'magenta' }) // Back face
+  ];
+
   return (
-    <mesh position={[0, 0, 0]} ref={ref}>
+    <mesh position={[0, 0, 0]} ref={ref} material={materials}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="blue" />
     </mesh>
   );
 }
