@@ -4,12 +4,16 @@ import * as THREE from 'three';
 import { Gyroscope } from 'expo-sensors';
 import { Platform } from "react-native";
 
-export default function Box() {
+interface BoxProps {
+  position: [number, number, number];
+}
+
+export default function Box({ position = [0, 0, 0] }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
 
   useEffect(() => {
-    let subscription:any;
+    let subscription: any;
 
     if (Platform.OS !== "web") {
       // available was true on web platform for some reason
@@ -22,7 +26,7 @@ export default function Box() {
           });
         }
       });
-  }
+    }
 
     Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
 
@@ -42,16 +46,16 @@ export default function Box() {
   });
 
   const materials = [
-    new THREE.MeshStandardMaterial({ color: 'red' }),    // Right face
-    new THREE.MeshStandardMaterial({ color: 'green' }),  // Left face
-    new THREE.MeshStandardMaterial({ color: 'blue' }),   // Top face
-    new THREE.MeshStandardMaterial({ color: 'yellow' }), // Bottom face
-    new THREE.MeshStandardMaterial({ color: 'cyan' }),   // Front face
-    new THREE.MeshStandardMaterial({ color: 'magenta' }) // Back face
+    new THREE.MeshStandardMaterial({ color: "red" }), // Right face
+    new THREE.MeshStandardMaterial({ color: "green" }), // Left face
+    new THREE.MeshStandardMaterial({ color: "blue" }), // Top face
+    new THREE.MeshStandardMaterial({ color: "yellow" }), // Bottom face
+    new THREE.MeshStandardMaterial({ color: "cyan" }), // Front face
+    new THREE.MeshStandardMaterial({ color: "magenta" }), // Back face
   ];
 
   return (
-    <mesh position={[0, 0, 0]} ref={ref} material={materials}>
+    <mesh position={position} ref={ref} material={materials}>
       <boxGeometry args={[1, 1, 1]} />
     </mesh>
   );

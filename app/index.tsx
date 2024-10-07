@@ -7,7 +7,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1 }}>
       <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
         <ambientLight />
-        <Box />
+        <Box key={x} position={[0, 0, 0]} />
       </Canvas>
     </View>
     )
