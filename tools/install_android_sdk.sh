@@ -1,6 +1,7 @@
 #!/bin/sh
 export ANDROID_HOME=${ANDROID_HOME:-/opt/android-sdk}
 
+apt-get install -y openjdk-21-jdk
 apt-get install -y --reinstall google-android-cmdline-tools-11.0-installer
 
 # Current Expo SDK version (51.0.0) uses android SDK v34
