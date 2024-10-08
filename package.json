@@ -10,7 +10,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "wakeAndroid": "adb shell input keyevent KEYCODE_WAKE"
   },
   "jest": {
     "preset": "jest-expo"
