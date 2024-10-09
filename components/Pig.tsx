@@ -25,7 +25,7 @@ type GLTFActions = Record<ActionName, THREE.AnimationAction>
 export default function Model() {
   const group = useRef<THREE.Group>()
   const { nodes, materials, animations } = useGLTF(require('../assets/models/Pig.glb')) as GLTFResult
-  const { actions } = useAnimations<GLTFActions>(animations, group)
+  // const { actions } = useAnimations<GLTFActions>(animations, group)
   return (
     <group ref={group} dispose={null}>
       <group name="Root_Scene">
