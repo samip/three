@@ -23,6 +23,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+      name="3d-model"
+      options={{
+        title: '3D Model',
+        tabBarIcon: ({ color, focused }) => (
+          <TabBarIcon name={focused ? 'accessibility' : 'accessibility-outline'} color={color} />
+        ),
+      }}
+      />
     </Tabs>
   );
 }
