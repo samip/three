@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import React, { useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei/native'
 import { GLTF } from 'three-stdlib'
+import { Asset } from 'expo-asset';
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -20,11 +21,12 @@ type GLTFResult = GLTF & {
 }
 
 type ActionName = 'Armature|Idle' | 'Armature|Jump'
-type GLTFActions = Record<ActionName, THREE.AnimationAction>
+// type GLTFActions = Record<ActionName, THREE.AnimationAction>
 
 export default function Model() {
   const group = useRef<THREE.Group>()
-  const { nodes, materials, animations } = useGLTF(require('../assets/models/Pig.glb')) as GLTFResult
+  const asset = Asset.fromModule(require('../assets/models/Pig.glb'));
+  const { nodes, materials, animations } = useGLTF(asset.uri) as GLTFResult;
   // const { actions } = useAnimations<GLTFActions>(animations, group)
   return (
     <group ref={group} dispose={null}>
