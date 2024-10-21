@@ -1,16 +1,13 @@
 import { StyleSheet, View, Text } from 'react-native';
 import { Canvas } from '@react-three/fiber';
-import Box from '../../components/Box'; // Adjust the path as necessary
+import Matrix from '@/components/Matrix';
+import Box from '@/components/Box';
+
 
 export default function HomeScreen() {
   return (
     <View style={{ flex: 1 }}>
-      <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
-        <ambientLight />
-        {[0, 1, 2].map((x) => (
-          <Box key={x} position={[x , x, x-2]} />
-        ))}
-      </Canvas>
+      <Matrix />
     </View>
     )
   }

@@ -4,12 +4,13 @@ import * as THREE from "three";
 import { Gyroscope } from "expo-sensors";
 import { Platform } from "react-native";
 // import { Renderable } from "../types/renderable";
+import Box from './Box'; // Adjust the path as necessary
 
 interface MatrixProps {
   renderItem: MeshProps;
 }
 
-export default function Matrix({ renderItem }: MatrixProps) {
+export default function Matrix() {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
 
@@ -36,6 +37,7 @@ export default function Matrix({ renderItem }: MatrixProps) {
       }
     };
   }, []);
+  /*
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.x += rotation.current.x;
@@ -43,10 +45,14 @@ export default function Matrix({ renderItem }: MatrixProps) {
       ref.current.rotation.z += rotation.current.z;
     }
   });
+  */
 
   return (
     <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
-
-    </Canvas>
+      <ambientLight />
+      {[0, 1, 2].map((x) => (
+        <Box key={x} position={[x , x, 0]} />
+      ))}
+  </Canvas>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Gyroscope } from 'expo-sensors';
 import { Platform } from "react-native";
