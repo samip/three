@@ -3,7 +3,7 @@ import { useFrame, Canvas, MeshProps } from "@react-three/fiber";
 import * as THREE from "three";
 import { Gyroscope } from "expo-sensors";
 import { Platform } from "react-native";
-import { Renderable } from "../types/renderable";
+// import { Renderable } from "../types/renderable";
 
 interface MatrixProps {
   renderItem: MeshProps;
@@ -36,7 +36,6 @@ export default function Matrix({ renderItem }: MatrixProps) {
       }
     };
   }, []);
-
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.x += rotation.current.x;
