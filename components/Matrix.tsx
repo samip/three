@@ -50,9 +50,13 @@ export default function Matrix() {
   return (
     <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
       <ambientLight />
-      {[0, 1, 2].map((x) => (
-        <Box key={x} position={[x , x, 0]} />
+      {[0, 1, 2, 3, 4, 5, 6, 7].map((x) => (
+        <React.Fragment key={x}>
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((y) => (
+            <Box key={`${x}_${y}`} position={[x, y, 0]} />
+          ))}
+        </React.Fragment>
       ))}
-  </Canvas>
+    </Canvas>
   );
 }
