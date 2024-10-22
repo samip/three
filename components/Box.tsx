@@ -58,7 +58,7 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
 
   return (
     <mesh position={position} ref={ref} material={materials}>
-      <boxGeometry args={[1, 1, 1]} />
+      <boxGeometry args={[0.5, 0.5, 0.5]} />
     </mesh>
   );
 }
