@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import { useFrame, Canvas, MeshProps } from "@react-three/fiber";
+import { useFrame, useThree, MeshProps } from "@react-three/fiber";
 import * as THREE from "three";
 import { Gyroscope } from "expo-sensors";
 import { Platform } from "react-native";
 // import { Renderable } from "../types/renderable";
 import Box from './Box'; // Adjust the path as necessary
+
 
 interface MatrixProps {
   renderItem: MeshProps;
@@ -13,6 +14,8 @@ interface MatrixProps {
 export default function Matrix() {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
+
+  const { scene, camera } = useThree();
 
   useEffect(() => {
     let subscription: any;
@@ -28,7 +31,7 @@ export default function Matrix() {
         }
       });
     }
-
+    camera.position.set(3.5, 3, 6);
     Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
 
     return () => {
@@ -37,7 +40,7 @@ export default function Matrix() {
       }
     };
   }, []);
-  /*
+  
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.x += rotation.current.x;
@@ -45,10 +48,9 @@ export default function Matrix() {
       ref.current.rotation.z += rotation.current.z;
     }
   });
-  */
 
   return (
-    <Canvas style={{ flex: 1, backgroundColor: 'red' }}>
+    <React.Fragment>
       <ambientLight />
       {[0, 1, 2, 3, 4, 5, 6, 7].map((x) => (
         <React.Fragment key={x}>
@@ -57,6 +59,6 @@ export default function Matrix() {
           ))}
         </React.Fragment>
       ))}
-    </Canvas>
+    </React.Fragment>
   );
 }
