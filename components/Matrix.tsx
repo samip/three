@@ -21,6 +21,7 @@ export default function Matrix() {
     let subscription: any;
 
     if (Platform.OS !== "web") {
+      Gyroscope.setUpdateInterval(20); // Update interval in milliseconds
       Gyroscope.isAvailableAsync().then((available) => {
         if (available) {
           subscription = Gyroscope.addListener((data) => {
@@ -32,7 +33,7 @@ export default function Matrix() {
       });
     }
     camera.position.set(3.5, 3, 6);
-    Gyroscope.setUpdateInterval(20); // Update interval in milliseconds
+
 
     return () => {
       if (subscription) {
@@ -49,11 +50,36 @@ export default function Matrix() {
     }
   });
 
-  const onChildFrame = (mesh:THREE.Mesh, x:any, y:any) => {
+
+  const onChildFrame = (mesh:THREE.Mesh, x:any, y:any) => {  
     mesh.rotation.x = rotation.current.x;
     mesh.rotation.y = rotation.current.y; 
     mesh.rotation.z = rotation.current.z;
   }
+
+  const onChildLoad = (mesh:THREE.Mesh, x:any, y:any) => {
+    const darkenColor = (color: THREE.Color, factor: number) => {
+      color.offsetHSL(0, 0, factor);
+      return color;
+    }
+  
+    mesh.rotation.x = rotation.current.x;
+    mesh.rotation.y = rotation.current.y; 
+    mesh.rotation.z = rotation.current.z;
+    const xDistanceToCenter = Math.abs(x - 3.5);
+    const yDistanceToCenter = Math.abs(y - 3);
+
+    if (Array.isArray(mesh.material)) {
+      mesh.material.forEach((material) => {
+        if (typeof material === "object" && material instanceof THREE.MeshStandardMaterial) {
+          console.log(material.color, darkenColor(material.color, 10), material.color)
+          material.color = darkenColor(material.color, 5);
+          console.log(material.color.getHexString(),darkenColor(material.color, 100).getHexString());
+        }
+      })
+    }
+  }
+    
 
   return (
     <React.Fragment>
@@ -61,7 +87,7 @@ export default function Matrix() {
       {[0, 1, 2, 3, 4, 5, 6, 7].map((x) => (
         <React.Fragment key={x}>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((y) => (
-            <Box onFrame={onChildFrame} key={`${x}_${y}`} position={[x, y, 0]} />
+            <Box onLoad={onChildLoad} onFrame={onChildFrame} key={`${x}_${y}`} position={[x, y, 0]} />
           ))}
         </React.Fragment>
       ))}
