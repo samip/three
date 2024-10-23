@@ -2,14 +2,19 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Gyroscope } from 'expo-sensors';
 import { Platform } from "react-native";
+import { useFrame } from '@react-three/fiber';
 
 interface BoxProps {
+  onFrame: (mesh: THREE.Mesh, x: any, y:any) => void;
   position: [number, number, number];
 }
 
-export default function Box({ position = [0, 0, 0] }: BoxProps) {
+export default function Box({ position = [0, 0, 0], onFrame = () => {} }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
-  const rotation = useRef({ x: 0, y: 0, z: 0 });
+  
+  useFrame(() => {
+    onFrame(ref.current, position[0], position[1]);
+  });
 
   useEffect(() => {
     let subscription: any;

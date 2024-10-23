@@ -32,7 +32,7 @@ export default function Matrix() {
       });
     }
     camera.position.set(3.5, 3, 6);
-    Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
+    Gyroscope.setUpdateInterval(200); // Update interval in milliseconds
 
     return () => {
       if (subscription) {
@@ -49,13 +49,19 @@ export default function Matrix() {
     }
   });
 
+  const onChildFrame = (mesh:THREE.Mesh, x:any, y:any) => {
+    mesh.rotation.x = rotation.current.x;
+    mesh.rotation.y = rotation.current.y; 
+    mesh.rotation.z = rotation.current.z;
+  }
+
   return (
     <React.Fragment>
       <ambientLight />
       {[0, 1, 2, 3, 4, 5, 6, 7].map((x) => (
         <React.Fragment key={x}>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((y) => (
-            <Box key={`${x}_${y}`} position={[x, y, 0]} />
+            <Box onFrame={onChildFrame} key={`${x}_${y}`} position={[x, y, 0]} />
           ))}
         </React.Fragment>
       ))}
