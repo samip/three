@@ -6,12 +6,17 @@ import { useFrame } from '@react-three/fiber';
 
 interface BoxProps {
   onFrame: (mesh: THREE.Mesh, x: any, y:any) => void;
+  onLoad: (mesh: THREE.Mesh, x: any, y:any) => void;
   position: [number, number, number];
 }
 
-export default function Box({ position = [0, 0, 0], onFrame = () => {} }: BoxProps) {
+export default function Box({ position = [0, 0, 0], onFrame = () => {}, onLoad = () => {} }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   
+  useEffect(() => {
+    onLoad(ref.current, position[0], position[1]);
+  }, []);
+
   useFrame(() => {
     onFrame(ref.current, position[0], position[1]);
   });
@@ -61,8 +66,10 @@ export default function Box({ position = [0, 0, 0], onFrame = () => {} }: BoxPro
     new THREE.MeshStandardMaterial({ color: "magenta" }), // Back face
   ];
 
+  const red = new THREE.MeshStandardMaterial({ color: "red", transparent: true, opacity: 1 });
+
   return (
-    <mesh position={position} ref={ref} material={materials}>
+    <mesh position={position} ref={ref} material={red}>
       <boxGeometry args={[0.5, 0.5, 0.5]} />
     </mesh>
   );

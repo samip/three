@@ -5,6 +5,7 @@ import { Gyroscope } from "expo-sensors";
 import { Platform } from "react-native";
 // import { Renderable } from "../types/renderable";
 import Box from './Box'; // Adjust the path as necessary
+import { blue } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 
 interface MatrixProps {
@@ -32,8 +33,8 @@ export default function Matrix() {
         }
       });
     }
-    camera.position.set(3.5, 3, 6);
 
+    camera.position.set(3.5, 3, 6);
 
     return () => {
       if (subscription) {
@@ -50,34 +51,17 @@ export default function Matrix() {
     }
   });
 
-
   const onChildFrame = (mesh:THREE.Mesh, x:any, y:any) => {  
+    const maxDistanceToCenter = Math.sqrt(Math.pow(-3.5, 2) + Math.pow(-3, 2));
+    const distanceToCenter = Math.sqrt(Math.pow(x - 3.5, 2) + Math.pow(y - 3, 2));
+    (mesh.material as THREE.Material).opacity = distanceToCenter / maxDistanceToCenter;
     mesh.rotation.x = rotation.current.x;
     mesh.rotation.y = rotation.current.y; 
     mesh.rotation.z = rotation.current.z;
   }
 
   const onChildLoad = (mesh:THREE.Mesh, x:any, y:any) => {
-    const darkenColor = (color: THREE.Color, factor: number) => {
-      color.offsetHSL(0, 0, factor);
-      return color;
-    }
-  
-    mesh.rotation.x = rotation.current.x;
-    mesh.rotation.y = rotation.current.y; 
-    mesh.rotation.z = rotation.current.z;
-    const xDistanceToCenter = Math.abs(x - 3.5);
-    const yDistanceToCenter = Math.abs(y - 3);
-
-    if (Array.isArray(mesh.material)) {
-      mesh.material.forEach((material) => {
-        if (typeof material === "object" && material instanceof THREE.MeshStandardMaterial) {
-          console.log(material.color, darkenColor(material.color, 10), material.color)
-          material.color = darkenColor(material.color, 5);
-          console.log(material.color.getHexString(),darkenColor(material.color, 100).getHexString());
-        }
-      })
-    }
+    (mesh.material as THREE.Material).opacity = 0;
   }
     
 
