@@ -32,7 +32,7 @@ export default function Matrix() {
       });
     }
     camera.position.set(3.5, 3, 6);
-    Gyroscope.setUpdateInterval(200); // Update interval in milliseconds
+    Gyroscope.setUpdateInterval(20); // Update interval in milliseconds
 
     return () => {
       if (subscription) {
