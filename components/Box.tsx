@@ -40,6 +40,7 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
   }, []);
 
   useFrame(() => {
+    console.log('Homo 7');
     if (ref.current) {
       ref.current.rotation.x += rotation.current.x;
       ref.current.rotation.y += rotation.current.y;
