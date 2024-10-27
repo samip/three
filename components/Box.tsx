@@ -12,6 +12,7 @@ interface BoxProps {
 
 export default function Box({ position = [0, 0, 0], onFrame = () => {}, onLoad = () => {} }: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
+  const rotation = useRef({ x: 0, y: 0, z: 0 });
   
   useEffect(() => {
     onLoad(ref.current, position[0], position[1]);
