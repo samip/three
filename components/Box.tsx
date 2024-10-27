@@ -26,9 +26,11 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
           });
         }
       });
+
+      Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
     }
 
-    Gyroscope.setUpdateInterval(16); // Update interval in milliseconds
+
 
     return () => {
       if (subscription) {
