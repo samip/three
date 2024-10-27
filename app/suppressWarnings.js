@@ -3,23 +3,33 @@ import { LogBox } from 'react-native';
 export function suppressWarnings() {
   const warningsToSuppress = [
     'props.pointerEvents is deprecated',
-    'EXGL: gl.pixelStorei()',
+    'selectable prop is deprecated',
+    'accessibilityRole is deprecated',
+    /^EXGL/,
+    'pixelStorei',
   ];
   
   const consoleWarn = console.warn;
   
-  // stop chrome from flooding deprecation warnings
-  // probably not the best way to do this
   console.warn = (...args) => {
-    const shouldSuppressWarnings = warningsToSuppress.some(warning =>
-      args.some(arg => arg.toLowerCase().includes(warning.toLowerCase()))
-    );
+    const shouldSuppressWarning = warningsToSuppress.some(warning => {
+      if (warning instanceof RegExp) {
+        return args.some(arg => warning.test(String(arg)));
+      }
+      return args.some(arg => String(arg).includes(warning));
+    });
     
-    if (!shouldSuppressWarnings) {
+    if (!shouldSuppressWarning) {
       consoleWarn(...args);
     }
   };
 
-  console.log('Suppressing warnings', warningsToSuppress);
-  LogBox.ignoreLogs(warningsToSuppress);
+  // Convert RegExp to strings for LogBox
+  const logBoxWarnings = warningsToSuppress.map(warning => 
+    warning instanceof RegExp ? warning.source : warning
+  );
+
+  console.log('Suppressing warnings:', logBoxWarnings);
+  LogBox.ignoreLogs(logBoxWarnings);
+  LogBox.ignoreAllLogs();
 }
