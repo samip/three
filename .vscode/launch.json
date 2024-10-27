@@ -9,7 +9,12 @@
             "request": "launch",
             "type": "chrome",
             "url": "http://localhost:8081",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ],
         },
         {
             "type": "expo",
