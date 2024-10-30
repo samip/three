@@ -2,25 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Gyroscope } from 'expo-sensors';
 import { Platform } from "react-native";
-import { useFrame } from '@react-three/fiber';
 
 interface BoxProps {
-  onFrame: (mesh: THREE.Mesh, x: any, y:any) => void;
-  onLoad: (mesh: THREE.Mesh, x: any, y:any) => void;
   position: [number, number, number];
 }
 
-export default function Box({ position = [0, 0, 0], onFrame = () => {}, onLoad = () => {} }: BoxProps) {
+export default function Box({ position = [0, 0, 0]}: BoxProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
-  
-  useEffect(() => {
-    onLoad(ref.current, position[0], position[1]);
-  }, []);
-
-  useFrame(() => {
-    onFrame(ref.current, position[0], position[1]);
-  });
 
   useEffect(() => {
     let subscription: any;
@@ -49,15 +38,6 @@ export default function Box({ position = [0, 0, 0], onFrame = () => {}, onLoad =
     };
   }, []);
 
-  useFrame(() => {
-    console.log('Homo 7');
-    if (ref.current) {
-      ref.current.rotation.x += rotation.current.x;
-      ref.current.rotation.y += rotation.current.y;
-      ref.current.rotation.z += rotation.current.z;
-    }
-  });
-
   const materials = [
     new THREE.MeshStandardMaterial({ color: "red" }), // Right face
     new THREE.MeshStandardMaterial({ color: "green" }), // Left face
@@ -67,10 +47,8 @@ export default function Box({ position = [0, 0, 0], onFrame = () => {}, onLoad =
     new THREE.MeshStandardMaterial({ color: "magenta" }), // Back face
   ];
 
-  const red = new THREE.MeshStandardMaterial({ color: "red", transparent: true, opacity: 1 });
-
   return (
-    <mesh position={position} ref={ref} material={red}>
+    <mesh position={position} ref={ref} material={materials}>
       <boxGeometry args={[0.5, 0.5, 0.5]} />
     </mesh>
   );
