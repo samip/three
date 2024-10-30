@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.spell.three"
+      "package": "com.spell.three",
+      "permissions": ["android.permission.HIGH_SAMPLING_RATE_SENSORS"]
     },
     "web": {
       "bundler": "metro",
