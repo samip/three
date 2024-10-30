@@ -24,7 +24,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1 }}>
       <Canvas  style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <Matrix xSize={8} ySize={8}>
-          {circleMesh}
+          {getPigMesh()}
         </Matrix>
       </Canvas>
     </View>

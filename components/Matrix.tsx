@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useMemo } from "react";
 import { useFrame, useThree, MeshProps } from "@react-three/fiber";
+import { OrbitControls, Stats } from "@react-three/drei";
 import * as THREE from "three";
 import { Gyroscope } from "expo-sensors";
 import { Platform } from "react-native";
@@ -15,15 +16,23 @@ interface MatrixProps {
 export default function Matrix({children, xSize, ySize}: MatrixProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
-  const { scene, camera } = useThree();
+  const { scene, camera, gl } = useThree();
   
+  const drawSphere = (position: THREE.Vector3, radius: number) => {
+    const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphereMesh.position.copy(position);
+    scene.add(sphereMesh);
+  }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
+    // drawSphere(mesh.boundingSphere.center, mesh.boundingSphere.radius);
     // console.log('onChildBeforeRender', x, y);
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-    console.log('onChildLoad', x, y);
+    console.log('onChildLoad', mesh, x, y);
     if (x == 0 && y == 0) {
       mesh.position.set(x, y, -0.5)
     }
@@ -77,7 +86,8 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
       });
     }
 
-    camera.position.set(3.5, 3, 6);
+    // camera.position.set(3.5, 3, 6);
+    //controls.update();  //controls.update() must be called after any manual changes to the camera's transform
 
     return () => {
       if (subscription) {
@@ -97,6 +107,8 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   return (
     <React.Fragment>
       <ambientLight />
+      <OrbitControls />
+      <gridHelper rotation={[Math.PI / 2, 0, 0]} args={[20, 20, 0xff0000, 'teal']} />
     </React.Fragment>
   );
 }
