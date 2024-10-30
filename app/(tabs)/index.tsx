@@ -4,6 +4,7 @@ import Matrix from '@/components/Matrix';
 import Box from '@/components/Box';
 import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
+import { getPigMesh } from '@/components/Pig';
 
 export default function HomeScreen() {
   const materials = [
@@ -14,19 +15,6 @@ export default function HomeScreen() {
     new THREE.MeshStandardMaterial({ color: "cyan" }), // Front face
     new THREE.MeshStandardMaterial({ color: "magenta" }), // Back face
   ];
-  const mesh = useRef<THREE.Mesh>(null!);
-
-  useEffect(() => {
-    const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-
-    // Add the boxMesh as a child of the mesh
-    mesh.current = boxMesh;
-    console.log('index', mesh.current);
-  }, []);
-  // add THREE.BoxGeomeotry to mesh.current.children
-
 
   const circleGeometry = new THREE.CircleGeometry(0.5, 32); // change to circle
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
