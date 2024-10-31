@@ -2,10 +2,6 @@ import React, { useRef, useEffect, useMemo } from "react";
 import { useFrame, useThree, MeshProps } from "@react-three/fiber";
 import { OrbitControls, Stats } from "@react-three/drei";
 import * as THREE from "three";
-import { Gyroscope } from "expo-sensors";
-import { Platform } from "react-native";
-import { Children } from 'react';
-import Box from './Box';
 
 interface MatrixProps {
   xSize: number;
@@ -14,9 +10,9 @@ interface MatrixProps {
 }
 
 export default function Matrix({children, xSize, ySize}: MatrixProps) {
-  const ref = useRef<THREE.Mesh>(null!);
-  const rotation = useRef({ x: 0, y: 0, z: 0 });
+  const controlsRef = useRef<any>(null);
   const { scene, camera, gl } = useThree();
+  const itemSideLength = 1;
 
   const drawSphere = (position: THREE.Vector3, radius: number) => {
     const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
@@ -27,10 +23,7 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-    // drawSphere(mesh.boundingSphere.center, mesh.boundingSphere.radius);
-    // console.log('onChildBeforeRender', x, y);
-    // mesh.scale.set(0.001, 0.001, 0.001);
-    // mesh.geometry.scale(0.51, 0.51, 0.51);
+
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
@@ -58,10 +51,15 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
       return;
     }
     const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
-    const scale = 1 / max;
+    const scale = itemSideLength / max;
     mesh.scale.set(scale, scale, scale);
   }
-  // Create memoized array of boxes
+
+  const centerPoint = useMemo(() => {
+    const halfSide = itemSideLength / 2;
+    return new THREE.Vector3((xSize / 2) - halfSide, (ySize / 2) - halfSide, 0);
+  }, [xSize, ySize]);
+
   const boxes = useMemo(() => {
     const boxArray: THREE.Mesh[][] = [];
     for (let x = 0; x < xSize; x++) {
@@ -79,26 +77,37 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   }, [xSize, ySize]);
 
   useEffect(() => {
-    // camera.position.set(3.5, 3, 6);
-    //controls.update();  //controls.update() must be called after any manual changes to the camera's transform
-    // Position camera to view entire matrix
-    const maxDimension = Math.max(xSize, ySize);
-    const distance = maxDimension * 1.5; // Multiplier for margin
-    const centerX = (xSize - 1) / 2;
-    const centerY = (ySize - 1) / 2;
-    const helper = new THREE.CameraHelper( camera );
-    //scene.add( helper );
-    camera.position.set(centerX, centerY, distance);
-    camera.lookAt(centerX, centerY, 0);
+    camera.position.set(centerPoint.x, centerPoint.y, 12);
+    // camera.rotation.set(0.18, -0.25, 0.04);
+    if (controlsRef.current) {
+      controlsRef.current.update();
+    }
+    drawSphere(centerPoint, 0.25);
   }, []);
 
   useFrame(() => {
   });
 
+  const handleCameraMove = () => {
+    // Actions to perform whenever the camera moves
+    // console.log('Camera position:', controlsRef.current.object.position);
+  };
+
+  const handleCameraMoveEnd = () => {
+    // Actions to perform when the camera stops moving
+    // console.log('Camera move ended');
+  };
+
   return (
     <React.Fragment>
       <ambientLight />
-      <OrbitControls />
+      <axesHelper args={[8]} />
+      <OrbitControls
+        ref={controlsRef}
+        onChange={handleCameraMove}     // Triggers during camera movement
+        onEnd={handleCameraMoveEnd}     // Triggers when movement ends
+      />
+      
       <gridHelper position={[3.5, 3.5, 0]} rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
       {boxes.map((row, x) => 
         row.map((mesh, y) => (
