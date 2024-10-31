@@ -29,16 +29,12 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
     // drawSphere(mesh.boundingSphere.center, mesh.boundingSphere.radius);
     // console.log('onChildBeforeRender', x, y);
+    // mesh.scale.set(0.001, 0.001, 0.001);
+    // mesh.geometry.scale(0.51, 0.51, 0.51);
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-    console.log('onChildLoad', mesh, x, y);
-    if (x == 0 && y == 0) {
-      mesh.position.set(x, y, -0.5)
-    }
-    if (x == xSize - 1 && y == ySize - 1) {
-      mesh.position.set(x, y, 0.5)
-    }
+
   }
 
 
@@ -49,24 +45,34 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   }
 
   const getDefaultMesh = () => getBoxMesh();
-
+  
+  // scale mesh to fit in 1x1x1 cube
+  const scaleToFit = (mesh: THREE.Mesh) => {
+    const boundingBox = mesh.geometry.boundingBox; // object.geometry.computeBoundingBox();
+    if (!boundingBox) {
+      mesh.geometry.computeBoundingBox();
+    }
+    if (boundingBox) {
+      const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
+      const scale = 1 / max;
+      mesh.scale.set(scale, scale, scale);
+    }
+  }
   // Create memoized array of boxes
   const boxes = useMemo(() => {
-    const boxArray: THREE.Mesh[][] = []; // array of arrays of Mesh3D
+    const boxArray: THREE.Mesh[][] = [];
     for (let x = 0; x < xSize; x++) {
       boxArray[x] = [];
       for (let y = 0; y < ySize; y++) {
-
         const matrixMesh = children ? children.clone() : getDefaultMesh();
-        matrixMesh.position.set(x, y, 0);
+        scaleToFit(matrixMesh);
         matrixMesh.onBeforeRender = () => {
           onChildBeforeRender(matrixMesh, x, y);
         }
         boxArray[x].push(matrixMesh);
-        scene.add(matrixMesh);
         onChildLoad(matrixMesh, x, y);
       }}
-
+    console.log('boxes', boxArray);
     return boxArray;
   }, [xSize, ySize]);
 
@@ -78,7 +84,8 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
     const distance = maxDimension * 1.5; // Multiplier for margin
     const centerX = (xSize - 1) / 2;
     const centerY = (ySize - 1) / 2;
-
+    const helper = new THREE.CameraHelper( camera );
+    //scene.add( helper );
     camera.position.set(centerX, centerY, distance);
     camera.lookAt(centerX, centerY, 0);
   }, []);
@@ -90,7 +97,16 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
     <React.Fragment>
       <ambientLight />
       <OrbitControls />
-      <gridHelper rotation={[Math.PI / 2, 0, 0]} args={[20, 20, 0xff0000, 'teal']} />
+      <gridHelper rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
+      {boxes.map((row, x) => 
+        row.map((mesh, y) => (
+          <primitive 
+            key={`${x}-${y}`}
+            object={mesh}
+            position={[x, y, 0]}
+          />
+        ))
+      )}
     </React.Fragment>
   );
 }
