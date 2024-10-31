@@ -5,6 +5,7 @@ import Box from '@/components/Box';
 import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
 import { getPigMesh } from '@/components/Pig';
+import AutofitCamera from '@/components/AutofitCamera';
 
 export default function HomeScreen() {
   const materials = [
@@ -16,15 +17,15 @@ export default function HomeScreen() {
     new THREE.MeshStandardMaterial({ color: "magenta" }), // Back face
   ];
 
-  const circleGeometry = new THREE.CircleGeometry(0.5, 32); // change to circle
+  const sphereGeometry = new THREE.SphereGeometry(5); // change to circle
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const circleMesh = new THREE.Mesh(circleGeometry, material);
+  const sphereMesh = new THREE.Mesh(sphereGeometry, material);
   
   return (
     <View style={{ flex: 1 }}>
       <Canvas  style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <Matrix xSize={8} ySize={8}>
-          {circleMesh}
+          {getPigMesh()}
         </Matrix>
       </Canvas>
     </View>

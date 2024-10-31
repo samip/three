@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
 import { useFrame, useThree, MeshProps } from "@react-three/fiber";
+import { OrbitControls, Stats } from "@react-three/drei";
 import * as THREE from "three";
-import { Gyroscope } from "expo-sensors";
-import { Platform } from "react-native";
-import { Children } from 'react';
-import Box from './Box';
 
 interface MatrixProps {
   xSize: number;
@@ -13,23 +10,24 @@ interface MatrixProps {
 }
 
 export default function Matrix({children, xSize, ySize}: MatrixProps) {
-  const ref = useRef<THREE.Mesh>(null!);
-  const rotation = useRef({ x: 0, y: 0, z: 0 });
-  const { scene, camera } = useThree();
-  
+  const controlsRef = useRef<any>(null);
+  const { scene, camera, gl } = useThree();
+  const itemSideLength = 1;
+
+  const drawSphere = (position: THREE.Vector3, radius: number) => {
+    const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphereMesh.position.copy(position);
+    scene.add(sphereMesh);
+  }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-    // console.log('onChildBeforeRender', x, y);
+
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-    console.log('onChildLoad', x, y);
-    if (x == 0 && y == 0) {
-      mesh.position.set(x, y, -0.5)
-    }
-    if (x == xSize - 1 && y == ySize - 1) {
-      mesh.position.set(x, y, 0.5)
-    }
+
   }
 
 
@@ -40,63 +38,86 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   }
 
   const getDefaultMesh = () => getBoxMesh();
+  
+  // scale mesh to fit in 1x1x1 cube
+  const scaleToFit = (mesh: THREE.Mesh) => {
+    let boundingBox = mesh.geometry.boundingBox; // object.geometry.computeBoundingBox();
+    if (!boundingBox) {
+      mesh.geometry.computeBoundingBox();
+    }
+    boundingBox = mesh.geometry.boundingBox;
+    if (!boundingBox) {
+      console.error('Could not compute bounding box');
+      return;
+    }
+    const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
+    const scale = itemSideLength / max;
+    mesh.scale.set(scale, scale, scale);
+  }
 
-  // Create memoized array of boxes
+  const centerPoint = useMemo(() => {
+    const halfSide = itemSideLength / 2;
+    return new THREE.Vector3((xSize / 2) - halfSide, (ySize / 2) - halfSide, 0);
+  }, [xSize, ySize]);
+
   const boxes = useMemo(() => {
-    const boxArray: THREE.Mesh[][] = []; // array of arrays of Mesh3D
+    const boxArray: THREE.Mesh[][] = [];
     for (let x = 0; x < xSize; x++) {
       boxArray[x] = [];
       for (let y = 0; y < ySize; y++) {
-
         const matrixMesh = children ? children.clone() : getDefaultMesh();
-        matrixMesh.position.set(x, y, 0);
+        scaleToFit(matrixMesh);
         matrixMesh.onBeforeRender = () => {
           onChildBeforeRender(matrixMesh, x, y);
         }
         boxArray[x].push(matrixMesh);
-        scene.add(matrixMesh);
         onChildLoad(matrixMesh, x, y);
       }}
-
     return boxArray;
   }, [xSize, ySize]);
 
   useEffect(() => {
-    let subscription: any;
-
-    if (Platform.OS !== "web") {
-      Gyroscope.setUpdateInterval(20); // Update interval in milliseconds
-      Gyroscope.isAvailableAsync().then((available) => {
-        if (available) {
-          subscription = Gyroscope.addListener((data) => {
-            rotation.current.x = data.x ?? 0;
-            rotation.current.y = data.y ?? 0;
-            rotation.current.z = data.z ?? 0;
-          });
-        }
-      });
+    camera.position.set(centerPoint.x, centerPoint.y, 12);
+    // camera.rotation.set(0.18, -0.25, 0.04);
+    if (controlsRef.current) {
+      controlsRef.current.update();
     }
-
-    camera.position.set(3.5, 3, 6);
-
-    return () => {
-      if (subscription) {
-        subscription.remove();
-      }
-    };
+    drawSphere(centerPoint, 0.25);
   }, []);
 
   useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.x += rotation.current.x;
-      ref.current.rotation.y += rotation.current.y;
-      ref.current.rotation.z += rotation.current.z;
-    }
   });
+
+  const handleCameraMove = () => {
+    // Actions to perform whenever the camera moves
+    // console.log('Camera position:', controlsRef.current.object.position);
+  };
+
+  const handleCameraMoveEnd = () => {
+    // Actions to perform when the camera stops moving
+    // console.log('Camera move ended');
+  };
 
   return (
     <React.Fragment>
       <ambientLight />
+      <axesHelper args={[8]} />
+      <OrbitControls
+        ref={controlsRef}
+        onChange={handleCameraMove}     // Triggers during camera movement
+        onEnd={handleCameraMoveEnd}     // Triggers when movement ends
+      />
+      
+      <gridHelper position={[3.5, 3.5, 0]} rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
+      {boxes.map((row, x) => 
+        row.map((mesh, y) => (
+          <primitive 
+            key={`${x}-${y}`}
+            object={mesh}
+            position={[x, y, 0]}
+          />
+        ))
+      )}
     </React.Fragment>
   );
 }
