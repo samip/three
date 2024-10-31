@@ -17,7 +17,7 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   const ref = useRef<THREE.Mesh>(null!);
   const rotation = useRef({ x: 0, y: 0, z: 0 });
   const { scene, camera, gl } = useThree();
-  
+
   const drawSphere = (position: THREE.Vector3, radius: number) => {
     const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -71,37 +71,19 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   }, [xSize, ySize]);
 
   useEffect(() => {
-    let subscription: any;
-
-    if (Platform.OS !== "web") {
-      Gyroscope.setUpdateInterval(20); // Update interval in milliseconds
-      Gyroscope.isAvailableAsync().then((available) => {
-        if (available) {
-          subscription = Gyroscope.addListener((data) => {
-            rotation.current.x = data.x ?? 0;
-            rotation.current.y = data.y ?? 0;
-            rotation.current.z = data.z ?? 0;
-          });
-        }
-      });
-    }
-
     // camera.position.set(3.5, 3, 6);
     //controls.update();  //controls.update() must be called after any manual changes to the camera's transform
+    // Position camera to view entire matrix
+    const maxDimension = Math.max(xSize, ySize);
+    const distance = maxDimension * 1.5; // Multiplier for margin
+    const centerX = (xSize - 1) / 2;
+    const centerY = (ySize - 1) / 2;
 
-    return () => {
-      if (subscription) {
-        subscription.remove();
-      }
-    };
+    camera.position.set(centerX, centerY, distance);
+    camera.lookAt(centerX, centerY, 0);
   }, []);
 
   useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.x += rotation.current.x;
-      ref.current.rotation.y += rotation.current.y;
-      ref.current.rotation.z += rotation.current.z;
-    }
   });
 
   return (
