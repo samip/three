@@ -48,15 +48,18 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
   
   // scale mesh to fit in 1x1x1 cube
   const scaleToFit = (mesh: THREE.Mesh) => {
-    const boundingBox = mesh.geometry.boundingBox; // object.geometry.computeBoundingBox();
+    let boundingBox = mesh.geometry.boundingBox; // object.geometry.computeBoundingBox();
     if (!boundingBox) {
       mesh.geometry.computeBoundingBox();
     }
-    if (boundingBox) {
-      const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
-      const scale = 1 / max;
-      mesh.scale.set(scale, scale, scale);
+    boundingBox = mesh.geometry.boundingBox;
+    if (!boundingBox) {
+      console.error('Could not compute bounding box');
+      return;
     }
+    const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
+    const scale = 1 / max;
+    mesh.scale.set(scale, scale, scale);
   }
   // Create memoized array of boxes
   const boxes = useMemo(() => {
@@ -72,7 +75,6 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
         boxArray[x].push(matrixMesh);
         onChildLoad(matrixMesh, x, y);
       }}
-    console.log('boxes', boxArray);
     return boxArray;
   }, [xSize, ySize]);
 
@@ -97,7 +99,7 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
     <React.Fragment>
       <ambientLight />
       <OrbitControls />
-      <gridHelper rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
+      <gridHelper position={[3.5, 3.5, 0]} rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
       {boxes.map((row, x) => 
         row.map((mesh, y) => (
           <primitive 
