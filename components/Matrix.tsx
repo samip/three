@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
-import { useFrame, useThree, MeshProps } from "@react-three/fiber";
-import { OrbitControls, Stats } from "@react-three/drei";
+import { useFrame, MeshProps } from "@react-three/fiber";
+import { Stats } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 interface MatrixProps {
@@ -10,8 +11,7 @@ interface MatrixProps {
 }
 
 export default function Matrix({children, xSize, ySize}: MatrixProps) {
-  const controlsRef = useRef<any>(null);
-  const { scene, camera, gl } = useThree();
+  const { scene } = useThree();
   const itemSideLength = 1;
 
   const drawSphere = (position: THREE.Vector3, radius: number) => {
@@ -55,11 +55,6 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
     mesh.scale.set(scale, scale, scale);
   }
 
-  const centerPoint = useMemo(() => {
-    const halfSide = itemSideLength / 2;
-    return new THREE.Vector3((xSize / 2) - halfSide, (ySize / 2) - halfSide, 0);
-  }, [xSize, ySize]);
-
   const boxes = useMemo(() => {
     const boxArray: THREE.Mesh[][] = [];
     for (let x = 0; x < xSize; x++) {
@@ -76,39 +71,18 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
     return boxArray;
   }, [xSize, ySize]);
 
-  useEffect(() => {
-    camera.position.set(centerPoint.x, centerPoint.y, 12);
-    // camera.rotation.set(0.18, -0.25, 0.04);
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-    drawSphere(centerPoint, 0.25);
-  }, []);
-
   useFrame(() => {
   });
-
-  const handleCameraMove = () => {
-    // Actions to perform whenever the camera moves
-    // console.log('Camera position:', controlsRef.current.object.position);
-  };
-
-  const handleCameraMoveEnd = () => {
-    // Actions to perform when the camera stops moving
-    // console.log('Camera move ended');
-  };
 
   return (
     <React.Fragment>
       <ambientLight />
       <axesHelper args={[8]} />
-      <OrbitControls
-        ref={controlsRef}
-        onChange={handleCameraMove}     // Triggers during camera movement
-        onEnd={handleCameraMoveEnd}     // Triggers when movement ends
+      <gridHelper 
+        position={[3.5, 3.5, 0]} 
+        rotation={[Math.PI / 2, 0, 0]} 
+        args={[xSize, xSize, 0xff0000, 'teal']} 
       />
-      
-      <gridHelper position={[3.5, 3.5, 0]} rotation={[Math.PI / 2, 0, 0]} args={[xSize, xSize, 0xff0000, 'teal']} />
       {boxes.map((row, x) => 
         row.map((mesh, y) => (
           <primitive 

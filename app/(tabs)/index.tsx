@@ -5,7 +5,7 @@ import Box from '@/components/Box';
 import * as THREE from 'three';
 import { useEffect, useRef } from 'react';
 import { getPigMesh } from '@/components/Pig';
-import AutofitCamera from '@/components/AutofitCamera';
+import CameraFollow from '@/components/CameraFollow';
 
 export default function HomeScreen() {
   const materials = [
@@ -24,9 +24,11 @@ export default function HomeScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Canvas  style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
-        <Matrix xSize={8} ySize={8}>
-          {getPigMesh()}
-        </Matrix>
+        <CameraFollow padding={1.2}>
+          <Matrix xSize={8} ySize={8}>
+            {getPigMesh()}
+          </Matrix>
+        </CameraFollow>
       </Canvas>
     </View>
     )
