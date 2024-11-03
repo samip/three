@@ -48,10 +48,10 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
     if (mesh.material instanceof THREE.MeshStandardMaterial) {
       mesh.material.transparent = true;
-      // mesh.material.alphaMap = alphaMap;
-      mesh.material.alphaTest = 0;
-      mesh.material.map = colorMap;
+      mesh.material.alphaMap = alphaMap;
       mesh.material.map = generateLiveTexture(LiveTextureType.FULL_COLOR);
+      // mesh.material.map = colorMap;
+      // mesh.material.map = generateLiveTexture(LiveTextureType.FULL_GREEN);
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.BLACK_AND_WHITE);
     }
   }

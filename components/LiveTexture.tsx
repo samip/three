@@ -6,6 +6,7 @@ const height = 32;
 export enum LiveTextureType {
     BLACK_AND_WHITE,
     FULL_COLOR,
+    FULL_GREEN,
 }
 
 function getTextureImageData(type: LiveTextureType) {
@@ -28,6 +29,12 @@ function getTextureImageData(type: LiveTextureType) {
                 data[stride + 1] = Math.floor(Math.random() * 256); // g
                 data[stride + 2] = Math.floor(Math.random() * 256); // b
                 data[stride + 3] = alpha; // a (useless)
+                break;
+            case LiveTextureType.FULL_GREEN:
+                data[stride] = 0;
+                data[stride + 1] = 255;
+                data[stride + 2] = 0;
+                data[stride + 3] = alpha;
                 break;
         }
     }
