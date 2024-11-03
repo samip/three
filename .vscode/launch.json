@@ -11,17 +11,19 @@
             "type": "chrome",
             "webRoot": "${workspaceFolder}",
             "urlFilter": "http://localhost:8081/*",
+            "sourceMaps": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+            ],
         },
         {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
             "url": "http://localhost:8081",
-            "webRoot": "${workspaceFolder}",
             "sourceMaps": true,
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/**",
-                "!**/node_modules/**"
             ],
             "runtimeArgs": [
                 "--remote-debugging-port=9222",
