@@ -3,6 +3,7 @@ import { useFrame, MeshProps } from "@react-three/fiber";
 import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { generateLiveTexture } from "./LiveTexture";
 
 interface MatrixProps {
   xSize: number;
@@ -39,7 +40,7 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-  
+    console.log(mesh);
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
@@ -50,7 +51,8 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
     if (children) {
       const material = new THREE.MeshBasicMaterial();
       material.transparent = true
-
+      // material.alphaMap = generateLiveTexture();
+      material.map = colorMap;
       material.alphaMap = alphaMap;
       mesh.material = material;
       children && (children.material = material);
@@ -99,7 +101,7 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
         onChildLoad(mesh, x, y);
       }}
     return boxArray;
-  }, [xSize, ySize]);
+  }, [xSize, ySize, mesh]);
 
   return (
     <React.Fragment>
