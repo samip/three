@@ -3,7 +3,7 @@ import { useFrame, MeshProps } from "@react-three/fiber";
 import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { generateLiveTexture } from "./LiveTexture";
+import { generateLiveTexture, getTextureImageData } from "./LiveTexture";
 
 interface MatrixProps {
   xSize: number;
@@ -40,7 +40,9 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-    console.log(mesh);
+    if (mesh.material instanceof THREE.MeshBasicMaterial) {
+      mesh.material.alphaMap = generateLiveTexture();
+    }
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
@@ -48,24 +50,21 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   }
   
   useEffect(() => {
-    if (children) {
-      const material = new THREE.MeshBasicMaterial();
-      material.transparent = true
-      // material.alphaMap = generateLiveTexture();
-      material.map = colorMap;
-      material.alphaMap = alphaMap;
-      mesh.material = material;
-      children && (children.material = material);
-      setMesh(children);
+    if (!children) {
+      return;
     }
+
+    const material = new THREE.MeshBasicMaterial();
+    material.transparent = true;
+    material.map = colorMap;
+    material.alphaMap = generateLiveTexture();
+    mesh.material = material;
+    children.material = material;
+    setMesh(children);
   }, [children]);
   
   useFrame(() => {
-
   });
-
-
-
   
   // scale mesh to fit in 1x1x1 cube
   const scaleToFit = (mesh: THREE.Mesh) => {
@@ -80,7 +79,6 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
 
     const boundingBox = mesh.geometry.boundingBox;
     const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
-    const padding = 0.2;
     const scale = (itemSideLength - padding)/ max;
     mesh.scale.set(scale, scale, scale);
   }
@@ -91,13 +89,13 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
     for (let x = 0; x < xSize; x++) {
       boxArray[x] = new Array(ySize);
       for (let y = 0; y < ySize; y++) {
-        scaleToFit(mesh);
-
-        // matrixMesh.material = material;
-        mesh.onBeforeRender = () => {
-          onChildBeforeRender(mesh, x, y);
+        const newMesh = mesh.clone();
+        scaleToFit(newMesh);
+        newMesh.onBeforeRender = () => {
+          onChildBeforeRender(newMesh, x, y);
         }
-        boxArray[x].push(mesh.clone());
+
+        boxArray[x].push(newMesh);
         onChildLoad(mesh, x, y);
       }}
     return boxArray;
