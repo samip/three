@@ -3,7 +3,7 @@ import { useFrame, MeshProps } from "@react-three/fiber";
 import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { generateLiveTexture, getTextureImageData } from "./LiveTexture";
+import { generateLiveTexture, LiveTextureType } from "./LiveTexture";
 
 interface MatrixProps {
   xSize: number;
@@ -24,7 +24,7 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
 
   const getBoxMesh = () => {
     const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     return new THREE.Mesh(boxGeometry, boxMaterial);
   }
 
@@ -40,27 +40,26 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-    if (mesh.material instanceof THREE.MeshBasicMaterial) {
-      mesh.material.alphaMap = generateLiveTexture();
+    if (mesh.material instanceof THREE.MeshStandardMaterial) {
+       
     }
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-  
+    if (mesh.material instanceof THREE.MeshStandardMaterial) {
+      mesh.material.transparent = true;
+      // mesh.material.alphaMap = alphaMap;
+      mesh.material.alphaTest = 0;
+      mesh.material.map = colorMap;
+      mesh.material.map = generateLiveTexture(LiveTextureType.FULL_COLOR);
+      // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.BLACK_AND_WHITE);
+    }
   }
   
   useEffect(() => {
-    if (!children) {
-      return;
+    if (children) {
+      setMesh(children);
     }
-
-    const material = new THREE.MeshBasicMaterial();
-    material.transparent = true;
-    material.map = colorMap;
-    material.alphaMap = generateLiveTexture();
-    mesh.material = material;
-    children.material = material;
-    setMesh(children);
   }, [children]);
   
   useFrame(() => {
