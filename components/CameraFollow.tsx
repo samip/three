@@ -20,6 +20,7 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
 
       // Calculate bounding box of all children
       const boundingBox = new THREE.Box3();
+      // TODO: should traverse children only
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh) {
           boundingBox.expandByObject(object);

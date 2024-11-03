@@ -78,7 +78,6 @@ export default function Matrix({children, xSize, ySize, padding = 0}: MatrixProp
 
   return (
     <React.Fragment>
-      <ambientLight />
       <axesHelper args={[8]} />
       <gridHelper 
         position={[3.5, 3.5, 0]} 

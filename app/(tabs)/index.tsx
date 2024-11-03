@@ -18,15 +18,20 @@ export default function HomeScreen() {
   ];
 
   const sphereGeometry = new THREE.SphereGeometry(5); // change to circle
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  // set nice shiny material
+
+  const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+  material.roughness = 0.2;
+  material.metalness = 0.5;
   const sphereMesh = new THREE.Mesh(sphereGeometry, material);
   
   return (
     <View style={{ flex: 1 }}>
       <Canvas  style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <CameraFollow padding={1.2}>
-          <Matrix padding={0.2} xSize={8} ySize={8}>
-            
+          <pointLight position={[3.5, 3.5, 1.5]} />
+          <Matrix padding={0.1} xSize={8} ySize={8}>
+              {sphereMesh}
           </Matrix>
         </CameraFollow>
       </Canvas>
