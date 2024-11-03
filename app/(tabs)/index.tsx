@@ -22,9 +22,9 @@ export default function HomeScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Canvas style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
+        <ambientLight intensity={0.2} />
+        <CursorLight />
         <CameraFollow padding={1.2}>
-          <ambientLight intensity={1.0} /> 
-          <CursorLight />
           <Matrix padding={0.1} xSize={8} ySize={8}>
             {sphereMesh}
           </Matrix>

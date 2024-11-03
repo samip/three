@@ -10,18 +10,17 @@ interface CameraFollowProps {
 
 export default function CameraFollow({ children, padding = 1.2 }: CameraFollowProps) {
   const controlsRef = useRef<any>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const { camera, scene } = useThree();
 
   useEffect(() => {
     // Wait for one frame to ensure children are mounted
     requestAnimationFrame(() => {
-      //const scene = camera.parent;
-      if (!scene) return;
+      if (!groupRef.current) return;
 
       // Calculate bounding box of all children
       const boundingBox = new THREE.Box3();
-      // TODO: should traverse children only
-      scene.traverse((object) => {
+      groupRef.current.traverse((object) => {
         if (object instanceof THREE.Mesh) {
           boundingBox.expandByObject(object);
         }
@@ -41,17 +40,17 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
       // Position camera
       camera.position.set(center.x, center.y, cameraZ);
       camera.lookAt(center);
-
+      scene.add(camera);
       if (controlsRef.current) {
         controlsRef.current.target.copy(center);
         controlsRef.current.update();
       }
     });
-  }, [camera, padding]);
-
+  }, [camera, padding, children]);
 
   const handleCameraMove = () => {
     // Actions to perform whenever the camera moves
+    // console.log(camera.position);
   };
 
   const handleCameraMoveEnd = () => {
@@ -65,7 +64,9 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
         onChange={handleCameraMove}
         onEnd={handleCameraMoveEnd}
       />
-      {children}
+      <group ref={groupRef}>
+        {children}
+      </group>
     </>
   );
 } 

@@ -110,12 +110,13 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
   return (
     <React.Fragment>
       {renderHelpers && <axesHelper args={[8]} />}
-      {renderHelpers && <gridHelper
-        position={[3.5, 3.5, 0]}
-        rotation={[Math.PI / 2, 0, 0]}
-        args={[xSize, xSize, 0xff0000, 'teal']}
-      />}
-      {boxes.map((row, x) =>
+      {renderHelpers && <gridHelper 
+        position={[3.5, 3.5, 0]} 
+        rotation={[Math.PI / 2, 0, 0]} 
+        args={[xSize, xSize, 0xff0000, 'teal']} 
+        />}
+      
+      {boxes.map((row, x) => 
         row.map((mesh, y) => (
           <primitive
             key={`${x}-${y}`}
