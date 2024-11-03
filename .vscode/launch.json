@@ -23,6 +23,10 @@
                 "${workspaceFolder}/**",
                 "!**/node_modules/**"
             ],
+            "runtimeArgs": [
+                "--remote-debugging-port=9222",
+                "--user-data-dir=remote-profile"
+            ]
         },
         {
             "type": "expo",
