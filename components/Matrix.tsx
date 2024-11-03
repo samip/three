@@ -7,10 +7,11 @@ import * as THREE from "three";
 interface MatrixProps {
   xSize: number;
   ySize: number;
+  padding: number;
   children?:THREE.Mesh;
 }
 
-export default function Matrix({children, xSize, ySize}: MatrixProps) {
+export default function Matrix({children, xSize, ySize, padding = 0}: MatrixProps) {
   const { scene } = useThree();
   const itemSideLength = 1;
 
@@ -51,7 +52,8 @@ export default function Matrix({children, xSize, ySize}: MatrixProps) {
       return;
     }
     const max = Math.max(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
-    const scale = itemSideLength / max;
+    const padding = 0.2;
+    const scale = (itemSideLength - padding)/ max;
     mesh.scale.set(scale, scale, scale);
   }
 

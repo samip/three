@@ -29,7 +29,7 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
       // Calculate center and size
       const center = new THREE.Vector3();
       boundingBox.getCenter(center);
-      console.log(boundingBox, center);
+
       // Calculate optimal camera position
       const size = new THREE.Vector3();
       boundingBox.getSize(size);

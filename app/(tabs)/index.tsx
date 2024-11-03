@@ -25,8 +25,8 @@ export default function HomeScreen() {
     <View style={{ flex: 1 }}>
       <Canvas  style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <CameraFollow padding={1.2}>
-          <Matrix xSize={8} ySize={8}>
-            {getPigMesh()}
+          <Matrix padding={0.2} xSize={8} ySize={8}>
+            
           </Matrix>
         </CameraFollow>
       </Canvas>
