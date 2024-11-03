@@ -9,9 +9,10 @@ interface MatrixProps {
   ySize: number;
   padding: number;
   children?:THREE.Mesh;
+  renderHelpers?: boolean;
 }
 
-export default function Matrix({children, xSize, ySize, padding = 0}: MatrixProps) {
+export default function Matrix({children, xSize, ySize, padding = 0, renderHelpers = false}: MatrixProps) {
   const { scene } = useThree();
   const itemSideLength = 1;
 
@@ -24,12 +25,16 @@ export default function Matrix({children, xSize, ySize, padding = 0}: MatrixProp
   }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-
+  
   }
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-
+  
   }
+
+  useFrame(() => {
+
+  });
 
 
   const getBoxMesh = () => {
@@ -73,17 +78,14 @@ export default function Matrix({children, xSize, ySize, padding = 0}: MatrixProp
     return boxArray;
   }, [xSize, ySize]);
 
-  useFrame(() => {
-  });
-
   return (
     <React.Fragment>
-      <axesHelper args={[8]} />
-      <gridHelper 
+      {renderHelpers && <axesHelper args={[8]} />}
+      {renderHelpers && <gridHelper 
         position={[3.5, 3.5, 0]} 
         rotation={[Math.PI / 2, 0, 0]} 
         args={[xSize, xSize, 0xff0000, 'teal']} 
-      />
+        />} 
       {boxes.map((row, x) => 
         row.map((mesh, y) => (
           <primitive 
