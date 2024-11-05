@@ -40,8 +40,8 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
         break;
       case LiveTextureType.DIAGONAL:
         const color = (x: number, y: number, position: Float) => {
-          let pos = Math.floor((width * position) - (width / 2));
-          const distanceFromDiagonal = Math.abs( (x + pos) - (y + pos) );
+          let pos = -128 + (position * 256);
+          const distanceFromDiagonal = Math.abs( (x - pos) - (y) );
           return distanceFromDiagonal <= stripeWidth ? 0 : 255;
         };
 
