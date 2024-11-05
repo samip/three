@@ -42,13 +42,12 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
         const color = (x: number, y: number, position: Float) => {
           let pos = -128 + (position * 256);
           const distanceFromDiagonal = Math.abs( (x - pos) - (y) );
-          return distanceFromDiagonal <= stripeWidth ? 0 : 255;
+          return distanceFromDiagonal >= stripeWidth ? 0 : 255;
         };
 
         const stripeWidth = 32;
         const x = i % width;
         const y = Math.floor(i / width);
-        console.log(x, y);
         // generate diagonal black and white strip
         const colorValue = color(x, y, position);
         data[stride] = colorValue;
@@ -61,7 +60,26 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
   return data;
 }
 
+export function animateTexture(mesh: THREE.Mesh, offset: number = 0.0) {
+  if (mesh.material instanceof THREE.MeshStandardMaterial) {
+    mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, offset);
+    if (offset >= 1.0) {
+      offset = 0.0;
+    } else {
+      offset += 0.01;
+    }
+    setTimeout(() => {
+      animateTexture(mesh, offset);
+    }, 100);
+  }
+}
+
+const cachedTextures = new Map<string, THREE.Texture>();
 export function generateLiveTexture(type: LiveTextureType, position: Float = 0.0) {
+  const cacheKey = `${type}-${position}`;
+  if (cachedTextures.has(cacheKey)) {
+    return (cachedTextures.get(cacheKey) as THREE.Texture);
+  }
   const data = getTextureImageData(type, position);
   const texture = new THREE.DataTexture(
     data,
@@ -69,6 +87,7 @@ export function generateLiveTexture(type: LiveTextureType, position: Float = 0.0
     height,
     THREE.RGBAFormat
   );
+  cachedTextures.set(cacheKey, texture);
   texture.needsUpdate = true;
   return texture;
 }
@@ -88,8 +107,4 @@ export function getCanvas(type: LiveTextureType, position: Float = 0.0) {
 export function dumpTexture(type: LiveTextureType, position: Float = 0.0) {
   const canvas = getCanvas(type, position);
   document.body.prepend(canvas);
-}
-
-if (require.main === module) {
-  console.log(getCanvas(LiveTextureType.FULL_COLOR));
 }
