@@ -3,7 +3,7 @@ import { useFrame, MeshProps } from "@react-three/fiber";
 import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { generateLiveTexture, LiveTextureType } from "./LiveTexture";
+import { generateLiveTexture, LiveTextureType, getCanvas, dumpTexture } from "./LiveTexture";
 
 interface MatrixProps {
   xSize: number;
@@ -15,29 +15,24 @@ interface MatrixProps {
 
 export default function Matrix({children, xSize, ySize, padding = 0, renderHelpers = false}: MatrixProps) {
   const { scene } = useThree();
-  const [colorMap, alphaMap] = useTexture([
+  const [colorMap, alphaMap, diagonal, diagonalRainbow ] = useTexture([
     '/assets/textures/bricks.jpg',
-    '/assets/textures/netmesh.png'
+    '/assets/textures/netmesh.png',
+    '/assets/textures/diagonal.webp',
+    '/assets/textures/diagonal_rainbow.webp'
   ]);
+  
+  const [mesh, setMesh] = useState<THREE.Mesh>();
 
   const itemSideLength = 1;
 
   const getBoxMesh = () => {
     const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const boxMaterial = new THREE.MeshStandardMaterial();
     return new THREE.Mesh(boxGeometry, boxMaterial);
   }
 
   const getDefaultMesh = () => getBoxMesh();
-  const [mesh, setMesh] = useState<THREE.Mesh>(getDefaultMesh());
-
-  const drawSphere = (position: THREE.Vector3, radius: number) => {
-    const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
-    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphereMesh.position.copy(position);
-    scene.add(sphereMesh);
-  }
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
     if (mesh.material instanceof THREE.MeshStandardMaterial) {
@@ -48,18 +43,24 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
     if (mesh.material instanceof THREE.MeshStandardMaterial) {
       mesh.material.transparent = true;
-      mesh.material.alphaMap = alphaMap;
-      mesh.material.map = generateLiveTexture(LiveTextureType.FULL_COLOR);
+      //mesh.material.alphaMap = alphaMap;
+      //mesh.material.map = alphaMap;
       // mesh.material.map = colorMap;
-      // mesh.material.map = generateLiveTexture(LiveTextureType.FULL_GREEN);
-      // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.BLACK_AND_WHITE);
+      // mesh.material.map = diagonalRainbow;
+      // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
+      // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
+    }
+    if (x === 0 && y === 0 && mesh.material instanceof THREE.MeshStandardMaterial) {
+      //mesh.material.transparent = false;
     }
   }
   
-  useEffect(() => {
+  useEffect(() => {    
     if (children) {
       setMesh(children);
-    }
+    } 
+
+    dumpTexture(LiveTextureType.DIAGONAL, 0.5);
   }, [children]);
   
   useFrame(() => {
@@ -88,14 +89,14 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
     for (let x = 0; x < xSize; x++) {
       boxArray[x] = new Array(ySize);
       for (let y = 0; y < ySize; y++) {
-        const newMesh = mesh.clone();
+        const newMesh = mesh ? mesh.clone() : getDefaultMesh();
         scaleToFit(newMesh);
         newMesh.onBeforeRender = () => {
           onChildBeforeRender(newMesh, x, y);
         }
 
         boxArray[x].push(newMesh);
-        onChildLoad(mesh, x, y);
+        onChildLoad(newMesh, x, y);
       }}
     return boxArray;
   }, [xSize, ySize, mesh]);
