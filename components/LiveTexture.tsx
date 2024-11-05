@@ -45,7 +45,7 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
           return distanceFromDiagonal <= stripeWidth ? 0 : 255;
         };
 
-        const stripeWidth = 32;
+        const stripeWidth = 16;
         const x = i % width;
         const y = Math.floor(i / width);
         // generate diagonal black and white strip
@@ -70,7 +70,7 @@ export function animateTexture(mesh: THREE.Mesh, offset: number = 0.0) {
     }
     setTimeout(() => {
       animateTexture(mesh, offset);
-    }, 10);
+    }, 150);
   }
 }
 
