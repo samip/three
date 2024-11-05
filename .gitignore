@@ -44,4 +44,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+remote-profile/
+
 # @end expo-cli
