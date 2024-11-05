@@ -40,9 +40,9 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
         break;
       case LiveTextureType.DIAGONAL:
         const color = (x: number, y: number, position: Float) => {
-          let pos = -128 + (position * 256);
+          const pos = -128 + (position * 256);
           const distanceFromDiagonal = Math.abs( (x - pos) - (y) );
-          return distanceFromDiagonal >= stripeWidth ? 0 : 255;
+          return distanceFromDiagonal <= stripeWidth ? 0 : 255;
         };
 
         const stripeWidth = 32;
@@ -70,7 +70,7 @@ export function animateTexture(mesh: THREE.Mesh, offset: number = 0.0) {
     }
     setTimeout(() => {
       animateTexture(mesh, offset);
-    }, 100);
+    }, 10);
   }
 }
 
