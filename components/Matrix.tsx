@@ -51,16 +51,14 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
       // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
     }
     if (x === 0 && y === 0 && mesh.material instanceof THREE.MeshStandardMaterial) {
-      //mesh.material.transparent = false;
+      // mesh.material.transparent = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
     }
   }
   
   useEffect(() => {    
     if (children) {
       setMesh(children);
-    } 
-
-    dumpTexture(LiveTextureType.DIAGONAL, 0);
+    }
   }, [children]);
   
   useFrame(() => {
