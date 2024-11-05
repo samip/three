@@ -46,7 +46,7 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
       //mesh.material.alphaMap = alphaMap;
       //mesh.material.map = alphaMap;
       // mesh.material.map = colorMap;
-      // mesh.material.map = diagonalRainbow;
+       mesh.material.map = diagonalRainbow;
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
       // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
     }
@@ -60,7 +60,7 @@ export default function Matrix({children, xSize, ySize, padding = 0, renderHelpe
       setMesh(children);
     } 
 
-    dumpTexture(LiveTextureType.DIAGONAL, 0.5);
+    dumpTexture(LiveTextureType.DIAGONAL, 0);
   }, [children]);
   
   useFrame(() => {
