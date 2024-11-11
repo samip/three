@@ -50,8 +50,6 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
       //mesh.material.map = alphaMap;
       // mesh.material.map = colorMap;
       mesh.material.map = diagonalRainbow;
-      let offset = 0;
-      // log "homo" to console after timeout of 3 seconds
       animateTexture(mesh);
    
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
