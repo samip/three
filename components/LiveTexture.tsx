@@ -60,17 +60,53 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
   return data;
 }
 
-export function animateTexture(mesh: THREE.Mesh, offset: number = 0.0) {
+export function animateTexture(mesh: THREE.Mesh) {
   if (mesh.material instanceof THREE.MeshStandardMaterial) {
-    mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, offset);
-    if (offset >= 1.0) {
-      offset = 0.0;
-    } else {
-      offset += 0.01;
+    // Replace standard material with ShaderMaterial
+    mesh.material = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 },
+        stripeWidth: { value: 16.0 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float time;
+        uniform float stripeWidth;
+        varying vec2 vUv;
+
+        void main() {
+          // Scale UV coordinates to -128 to 128 range
+          vec2 pos = (vUv * 256.0) - 128.0;
+          
+          // Calculate animated position
+          float offset = -128.0 + (mod(time, 1.0) * 256.0);
+          
+          // Calculate distance from diagonal
+          float distanceFromDiagonal = abs((pos.x - offset) - pos.y);
+          
+          // Create stripe pattern
+          float color = distanceFromDiagonal <= stripeWidth ? 0.0 : 1.0;
+          
+          gl_FragColor = vec4(vec3(color), 1.0);
+        }
+      `,
+      transparent: true
+    });
+
+    // Animate the time uniform
+    function animate() {
+      if (mesh.material instanceof THREE.ShaderMaterial) {
+        mesh.material.uniforms.time.value += 0.01;
+        requestAnimationFrame(animate);
+      }
     }
-    setTimeout(() => {
-      animateTexture(mesh, offset);
-    }, 150);
+    animate();
   }
 }
 
