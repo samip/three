@@ -65,11 +65,30 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
   }, [children]);
 
   async function loadTexture() {
-    const asset = await Asset.loadAsync('https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg');
-    const loadedTexture = await new TextureLoader().loadAsync(asset[0].uri);
-    console.log('loadedTexture', loadedTexture);
-    setRainbowtexture(loadedTexture);
-    console.log('rainbowTexture', rainbowtexture); // why null?
+    // instantiate a loader
+    const loader = new THREE.TextureLoader();
+
+    // load a resource
+    loader.load(
+      // resource URL
+      'https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg',
+
+      // onLoad callback
+      function (texture) {
+        // in this example we create the material when the texture is loaded
+        const material = new THREE.MeshBasicMaterial({
+          map: texture
+        });
+      },
+
+      // onProgress callback currently not supported
+      undefined,
+
+      // onError callback
+      function (err) {
+        console.error('An error happened.');
+      }
+    );
   }
   useFrame(() => {
   });
