@@ -49,8 +49,9 @@ https://dl.google.com/android/repository/platform-tools-latest-darwin.zip
 
 # Building apk
 
-Install build tools with `tools/install_android_sdk.sh`
-
+Install build tools with `tools/install_android_sdk.sh` then:
+```
 npx expo prebuild
 cd android
 ./gradlew assembleRelease
+```
