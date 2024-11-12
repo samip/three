@@ -9,6 +9,9 @@ export default ({ config }) => ({
       eas: {
         projectId: "dcaa7171-39ab-41d8-a95c-10ed45658225"
       }
-    }
+    },
+    plugins: [
+      "expo-asset"
+    ]
   }
 });
