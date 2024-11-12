@@ -12,7 +12,7 @@ import { useTexture } from '@react-three/drei';
 export default function HomeScreen() {
   const sphereGeometry = new THREE.SphereGeometry(5); 
   const material = new THREE.MeshStandardMaterial({
-    // color: 0x00ffff,
+    color: 0x00ffff,
     roughness: 0.7,
     metalness: 0.1,
   });

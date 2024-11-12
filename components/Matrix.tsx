@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useMemo, useState } from "react";
-import { useFrame, MeshProps } from "@react-three/fiber";
+import { useFrame, MeshProps, useLoader } from "@react-three/fiber";
 import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { generateLiveTexture, LiveTextureType, getCanvas, dumpTexture, animateTexture } from "./LiveTexture";
 import { Asset } from 'expo-asset';
+import { TextureLoader } from 'three';
 
 interface MatrixProps {
   xSize: number;
@@ -16,17 +17,8 @@ interface MatrixProps {
 
 export default function Matrix({ children, xSize, ySize, padding = 0, renderHelpers = false }: MatrixProps) {
   const { scene } = useThree();
-
-  const [ diagonalRainbow] = useTexture([
-    //'https://www.ramirro.com/wp-content/uploads/2022/10/Stripes-2-Ceramic-Porcelain-Tiles-for-Wall-and-Floors-by-RAMIRRO-CERAMICA.webp',
-    // 'https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg'
-  ]);
-  
-
-  const meshAnimations = new Map<number, any>();
-
   const [mesh, setMesh] = useState<THREE.Mesh>();
-
+  const [rainbowtexture, setRainbowtexture] = useState<THREE.Texture>();
   const itemSideLength = 1;
 
   const getBoxMesh = () => {
@@ -38,18 +30,15 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
   const getDefaultMesh = () => getBoxMesh();
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
-    if (mesh.material instanceof THREE.MeshStandardMaterial) {
-
+    if (mesh.material instanceof THREE.MeshStandardMaterial && rainbowtexture) {
+      mesh.material.map = rainbowtexture;
     }
   }
 
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
     if (mesh.material instanceof THREE.MeshStandardMaterial) {
-      mesh.material.transparent = true;
       //mesh.material.alphaMap = alphaMap;
-      //mesh.material.map = alphaMap;
-       // mesh.material.map = diagonalRainbow;
       // mesh.material.map = diagonalRainbow;
       // animateTexture(mesh);
    
@@ -62,11 +51,26 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
   }
 
   useEffect(() => {
+    async function loadTexture() {
+      const asset = await Asset.loadAsync('https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg');
+      const loadedTexture = await new TextureLoader().loadAsync(asset[0].uri);
+      console.log('loadedTexture', loadedTexture);
+      setRainbowtexture(loadedTexture);
+      console.log('rainbowTexture', rainbowtexture); // why null?
+    }
+    loadTexture();
     if (children) {
       setMesh(children);
     }
   }, [children]);
 
+  async function loadTexture() {
+    const asset = await Asset.loadAsync('https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg');
+    const loadedTexture = await new TextureLoader().loadAsync(asset[0].uri);
+    console.log('loadedTexture', loadedTexture);
+    setRainbowtexture(loadedTexture);
+    console.log('rainbowTexture', rainbowtexture); // why null?
+  }
   useFrame(() => {
   });
 
@@ -89,7 +93,6 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
 
   const boxes = useMemo(() => {
     const boxArray: THREE.Mesh[][] = [];
-
     for (let x = 0; x < xSize; x++) {
       boxArray[x] = new Array(ySize);
       for (let y = 0; y < ySize; y++) {
