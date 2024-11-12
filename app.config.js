@@ -11,7 +11,8 @@ export default ({ config }) => ({
       }
     },
     plugins: [
-      "expo-asset"
+      "expo-asset",
+      "expo-router"
     ]
   }
 });
