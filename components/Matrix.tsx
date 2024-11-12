@@ -4,6 +4,7 @@ import { Stats, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { generateLiveTexture, LiveTextureType, getCanvas, dumpTexture, animateTexture } from "./LiveTexture";
+import { Asset } from 'expo-asset';
 
 interface MatrixProps {
   xSize: number;
@@ -15,14 +16,12 @@ interface MatrixProps {
 
 export default function Matrix({ children, xSize, ySize, padding = 0, renderHelpers = false }: MatrixProps) {
   const { scene } = useThree();
-  /*
-  const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
-    '/assets/textures/bricks.jpg',
-    '/assets/textures/netmesh.png',
-    '/assets/textures/diagonal.webp',
-    '/assets/textures/diagonal_rainbow.webp'
+
+  const [ diagonalRainbow] = useTexture([
+    //'https://www.ramirro.com/wp-content/uploads/2022/10/Stripes-2-Ceramic-Porcelain-Tiles-for-Wall-and-Floors-by-RAMIRRO-CERAMICA.webp',
+    'https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg'
   ]);
-  */
+  
 
   const meshAnimations = new Map<number, any>();
 
@@ -50,9 +49,9 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
       mesh.material.transparent = true;
       //mesh.material.alphaMap = alphaMap;
       //mesh.material.map = alphaMap;
-      // mesh.material.map = colorMap;
+       mesh.material.map = diagonalRainbow;
       // mesh.material.map = diagonalRainbow;
-      animateTexture(mesh);
+      // animateTexture(mesh);
    
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
       // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
