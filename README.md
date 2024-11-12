@@ -46,3 +46,11 @@ https://dl.google.com/android/repository/platform-tools-latest-darwin.zip
 ## Inside WSL
 - `adb connect <device_ip>:5555`
 - (maybe?) run `./tools/WSLHostPatcher.exe`
+
+# Building apk
+
+Install build tools with `tools/install_android_sdk.sh`
+
+npx expo prebuild
+cd android
+./gradlew assembleRelease
