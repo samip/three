@@ -3,7 +3,6 @@ export default ({ config }) => ({
   expo: {
     android: {
         package: "com.spell.three",
-        applicationId: "com.spell.three"
     },
     extra: {
       eas: {

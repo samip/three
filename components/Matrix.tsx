@@ -19,7 +19,7 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
 
   const [ diagonalRainbow] = useTexture([
     //'https://www.ramirro.com/wp-content/uploads/2022/10/Stripes-2-Ceramic-Porcelain-Tiles-for-Wall-and-Floors-by-RAMIRRO-CERAMICA.webp',
-    'https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg'
+    // 'https://www.shutterstock.com/image-vector/lgbt-diagonal-stripe-seamless-pattern-600nw-1365224087.jpg'
   ]);
   
 
@@ -49,7 +49,7 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
       mesh.material.transparent = true;
       //mesh.material.alphaMap = alphaMap;
       //mesh.material.map = alphaMap;
-       mesh.material.map = diagonalRainbow;
+       // mesh.material.map = diagonalRainbow;
       // mesh.material.map = diagonalRainbow;
       // animateTexture(mesh);
    
