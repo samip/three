@@ -15,12 +15,14 @@ interface MatrixProps {
 
 export default function Matrix({ children, xSize, ySize, padding = 0, renderHelpers = false }: MatrixProps) {
   const { scene } = useThree();
+  /*
   const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
     '/assets/textures/bricks.jpg',
     '/assets/textures/netmesh.png',
     '/assets/textures/diagonal.webp',
     '/assets/textures/diagonal_rainbow.webp'
   ]);
+  */
 
   const meshAnimations = new Map<number, any>();
 
@@ -49,7 +51,7 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
       //mesh.material.alphaMap = alphaMap;
       //mesh.material.map = alphaMap;
       // mesh.material.map = colorMap;
-      mesh.material.map = diagonalRainbow;
+      // mesh.material.map = diagonalRainbow;
       animateTexture(mesh);
    
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
