@@ -19,6 +19,15 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
   const { scene } = useThree();
   const [mesh, setMesh] = useState<THREE.Mesh>();
   const [rainbowtexture, setRainbowtexture] = useState<THREE.Texture>();
+  /*
+  const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
+    '/assets/textures/bricks.jpg',
+    '/assets/textures/netmesh.png',
+    '/assets/textures/diagonal.webp',
+    '/assets/textures/diagonal_rainbow.webp'
+  ]);
+  */
+
   const itemSideLength = 1;
 
   const getBoxMesh = () => {
@@ -26,7 +35,6 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
     const boxMaterial = new THREE.MeshStandardMaterial();
     return new THREE.Mesh(boxGeometry, boxMaterial);
   }
-
   const getDefaultMesh = () => getBoxMesh();
 
   const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
@@ -41,7 +49,7 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
       //mesh.material.alphaMap = alphaMap;
       // mesh.material.map = diagonalRainbow;
       // animateTexture(mesh);
-   
+
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
       // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
     }
