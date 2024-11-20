@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  materialx:
+    build:
+      context: ./MaterialX
+      dockerfile: Dockerfile
+    volumes:
+      - ./MaterialX:/src
+      - ./cmds:/cmds
+    command:
+      - /cmds/build.sh
