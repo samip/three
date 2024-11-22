@@ -8,10 +8,7 @@ interface CameraFollowProps {
   padding?: number; // Optional padding around the target
 }
 
-export default function CameraFollow({
-  children,
-  padding = 1.2,
-}: CameraFollowProps) {
+export default function CameraFollow({ children, padding = 1.2 }: CameraFollowProps) {
   const controlsRef = useRef<any>(null);
   const groupRef = useRef<THREE.Group>(null);
   const { camera, scene } = useThree();
@@ -49,7 +46,7 @@ export default function CameraFollow({
         controlsRef.current.update();
       }
     });
-  }, [camera, padding, children]);
+  }, [camera, padding, children, scene]);
 
   const handleCameraMove = () => {
     // Actions to perform whenever the camera moves
@@ -62,11 +59,7 @@ export default function CameraFollow({
 
   return (
     <>
-      <OrbitControls
-        ref={controlsRef}
-        onChange={handleCameraMove}
-        onEnd={handleCameraMoveEnd}
-      />
+      <OrbitControls ref={controlsRef} onChange={handleCameraMove} onEnd={handleCameraMoveEnd} />
       <group ref={groupRef}>{children}</group>
     </>
   );

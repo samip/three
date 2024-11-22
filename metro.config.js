@@ -2,6 +2,8 @@
 const { getDefaultConfig } = require('expo/metro-config');
 
 /** @type {import('expo/metro-config').MetroConfig} */
+
+/* eslint-disable no-undef */
 const config = getDefaultConfig(__dirname);
 
 [('js', 'jsx', 'json', 'ts', 'tsx', 'cjs', 'mjs')].forEach((ext) => {

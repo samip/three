@@ -28,11 +28,11 @@ export default function CursorLight() {
       const dir = vector.sub(camera.position).normalize();
       const distance = 5; // Adjust this value to control how far the light is from the camera
 
-      light.current.position.copy(
-        camera.position.clone().add(dir.multiplyScalar(distance)),
-      );
+      light.current.position.copy(camera.position.clone().add(dir.multiplyScalar(distance)));
+      light.current.intensity = 1.5;
+      light.current.distance = 10;
     }
   });
 
-  return <pointLight ref={light} intensity={1.5} distance={10} />;
+  return <pointLight ref={light} />;
 }

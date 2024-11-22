@@ -9,9 +9,6 @@ const ThreeDModelScreen = () => {
   const renderPigCanvas = () => {
     return (
       <Canvas shadows>
-        <directionalLight position={[5, 10, 15]} intensity={1} castShadow />
-        <directionalLight position={[-10, 10, 15]} intensity={1} />
-        <directionalLight position={[10, 10, 15]} intensity={1} />
         <Suspense fallback={null}>
           <Pig />
         </Suspense>

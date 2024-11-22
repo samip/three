@@ -111,10 +111,7 @@ export function animateTexture(mesh: THREE.Mesh) {
 }
 
 const cachedTextures = new Map<string, THREE.Texture>();
-export function generateLiveTexture(
-  type: LiveTextureType,
-  position: Float = 0.0,
-) {
+export function generateLiveTexture(type: LiveTextureType, position: Float = 0.0) {
   const cacheKey = `${type}-${position}`;
   if (cachedTextures.has(cacheKey)) {
     return cachedTextures.get(cacheKey) as THREE.Texture;
@@ -127,11 +124,7 @@ export function generateLiveTexture(
 }
 
 export function getCanvas(type: LiveTextureType, position: Float = 0.0) {
-  const imageData = new ImageData(
-    getTextureImageData(type, position),
-    width,
-    height,
-  );
+  const imageData = new ImageData(getTextureImageData(type, position), width, height);
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;

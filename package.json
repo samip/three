@@ -11,6 +11,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
+    "lint:fix": "npx prettier . --write",
     "wakeAndroid": "adb shell input keyevent KEYCODE_WAKE"
   },
   "jest": {

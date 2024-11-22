@@ -8,8 +8,18 @@ interface BoxProps {
 }
 
 export default function Box({ position = [0, 0, 0] }: BoxProps) {
-  const ref = useRef<THREE.Mesh>(null!);
-  const rotation = useRef({ x: 0, y: 0, z: 0 });
+  const materials = [
+    new THREE.MeshStandardMaterial({ color: 'red' }), // Right face
+    new THREE.MeshStandardMaterial({ color: 'green' }), // Left face
+    new THREE.MeshStandardMaterial({ color: 'blue' }), // Top face
+    new THREE.MeshStandardMaterial({ color: 'yellow' }), // Bottom face
+    new THREE.MeshStandardMaterial({ color: 'cyan' }), // Front face
+    new THREE.MeshStandardMaterial({ color: 'magenta' }), // Back face
+  ];
+
+  const meshRef = useRef<THREE.Mesh>(
+    new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), materials),
+  );
 
   useEffect(() => {
     let subscription: any;
@@ -19,9 +29,7 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
       Gyroscope.isAvailableAsync().then((available) => {
         if (available) {
           subscription = Gyroscope.addListener((data) => {
-            rotation.current.x = data.x ?? 0;
-            rotation.current.y = data.y ?? 0;
-            rotation.current.z = data.z ?? 0;
+            meshRef.current.rotation.set(data.x ?? 0, data.y ?? 0, data.z ?? 0);
           });
         }
       });
@@ -36,18 +44,6 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
     };
   }, []);
 
-  const materials = [
-    new THREE.MeshStandardMaterial({ color: 'red' }), // Right face
-    new THREE.MeshStandardMaterial({ color: 'green' }), // Left face
-    new THREE.MeshStandardMaterial({ color: 'blue' }), // Top face
-    new THREE.MeshStandardMaterial({ color: 'yellow' }), // Bottom face
-    new THREE.MeshStandardMaterial({ color: 'cyan' }), // Front face
-    new THREE.MeshStandardMaterial({ color: 'magenta' }), // Back face
-  ];
-
-  return (
-    <mesh position={position} ref={ref} material={materials}>
-      <boxGeometry args={[0.5, 0.5, 0.5]} />
-    </mesh>
-  );
+  const mesh = new THREE.Mesh();
+  return mesh;
 }

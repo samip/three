@@ -2,74 +2,40 @@ import { useGLTF } from '@react-three/drei/native';
 import { useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { GLTF } from 'three-stdlib';
 
-type GLTFResult = GLTF & {
-  nodes: {
-    Pig_1: THREE.SkinnedMesh;
-  };
-  materials: {
-    ['Material.003']: THREE.MeshStandardMaterial;
-    Material: THREE.MeshStandardMaterial;
-  };
-};
-
-export function getPigMesh() {
+export default function Pig() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { camera, gl, scene } = useThree();
   const asset = Asset.fromModule(require('../assets/models/Pig.glb'));
   const { nodes, materials } = useGLTF(asset.uri) as GLTFResult;
-  const material = materials['Material.003'];
-  let mesh = new THREE.Mesh(nodes.Pig_1.geometry, material);
-  const box = new THREE.BoxGeometry(10, 10, 10);
-  // mesh = new THREE.Mesh(box, new THREE.MeshStandardMaterial({color: 0x00ff00}));
-  mesh.name = 'pig';
-  mesh.userData = {
-    slug: 'pig',
-    material: material,
-  };
-  return mesh;
-}
 
-export default function Model() {
-  const { camera, gl, scene } = useThree();
-  let mesh = getPigMesh();
-
-  mesh.onBeforeRender = (
-    renderer,
-    scene,
-    camera,
-    geometry,
-    material,
-    group,
-  ) => {
-    // console.log(renderer, scene, camera, geometry, material, group);
+  type GLTFResult = GLTF & {
+    nodes: {
+      Pig_0: THREE.SkinnedMesh;
+      Pig_1: THREE.Mesh;
+    };
+    materials: {
+      ['Material.002']: THREE.MeshStandardMaterial;
+      Material: THREE.MeshStandardMaterial;
+    };
   };
 
-  mesh.rotation.set(-Math.PI / 2, 0, 0);
-  mesh.scale.set(100, 100, 100);
+  const getPigMesh = () => {
+    const material = materials.Material;
+    const mesh = new THREE.Mesh(nodes.Pig_1.geometry, material);
+    mesh.name = 'pig';
+    mesh.userData = {
+      slug: 'pig',
+    };
 
-  const sampleCodeUniformTransforms = (uniforms: any, mesh: THREE.Mesh) => {
-    uniforms.u_worldMatrix.value = mesh.matrixWorld;
-    const viewProjMat = new THREE.Matrix4();
-    const normalMat = new THREE.Matrix3();
-    const worldViewPos = new THREE.Vector3();
-    console.log(camera.position, mesh.scale, mesh.rotation);
-    uniforms.u_viewProjectionMatrix.value = viewProjMat.multiplyMatrices(
-      camera.projectionMatrix,
-      camera.matrixWorldInverse,
-    );
-
-    if (uniforms.u_viewPosition)
-      uniforms.u_viewPosition.value = camera.getWorldPosition(worldViewPos);
-
-    if (uniforms.u_worldInverseTransposeMatrix) {
-      const worldInverseMat = new THREE.Matrix4().setFromMatrix3(
-        normalMat.getNormalMatrix(mesh.matrixWorld),
-      );
-      uniforms.u_worldInverseTransposeMatrix.value = worldInverseMat;
-    }
-    return uniforms;
+    mesh.rotation.set(-Math.PI / 2, 0, 0);
+    mesh.scale.set(100, 100, 100);
+    return mesh;
   };
+
+  const meshRef = useRef<THREE.Mesh>(getPigMesh());
 
   async function setMaterial(mesh: THREE.Mesh) {
     fetch('/assets/materials/carpaint.jsmat')
@@ -103,27 +69,24 @@ export default function Model() {
           blending: THREE.NoBlending,
           side: THREE.DoubleSide,
         };
-        const material = new THREE.RawShaderMaterial(emptyShader);
-        console.log(material);
-        // material.uniforms = uniforms;
-        // mesh.material = material;
-        scene.add(mesh);
 
-        gl.render(scene, camera);
+        const material = new THREE.RawShaderMaterial(emptyShader);
+        meshRef.current.material = material;
       });
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function getFancyPigMesh() {
-    await setMaterial(mesh);
-    return mesh;
+    await setMaterial(meshRef.current);
   }
 
   useEffect(() => {
     const asyncFunc = async () => {
-      mesh = await getFancyPigMesh();
+      // await getFancyPigMesh();
     };
     setTimeout(asyncFunc, 1000);
   }, []);
 
-  return <primitive object={mesh} />;
+  // <mesh ref={meshRef} /> didnt work
+  // eslint-disable-next-line react/no-unknown-property
+  return <primitive object={meshRef.current} />;
 }

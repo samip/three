@@ -3,6 +3,6 @@ module.exports = {
   extends: ['expo', 'prettier'],
   ignorePatterns: ['tools/', 'lib/'],
   rules: {
-    indent: ['warn', 2],
+    indent: ['warn', 2, { SwitchCase: 1 }],
   },
 };

@@ -19,10 +19,7 @@ export default function TabLayout() {
         options={{
           title: 'Cubes',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? 'cube' : 'cube-outline'}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'cube' : 'cube-outline'} color={color} />
           ),
         }}
       />
@@ -31,10 +28,7 @@ export default function TabLayout() {
         options={{
           title: '3D Model',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? 'accessibility' : 'accessibility-outline'}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'accessibility' : 'accessibility-outline'} color={color} />
           ),
         }}
       />
