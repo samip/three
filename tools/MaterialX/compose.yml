@@ -4,9 +4,9 @@ services:
   materialx:
     build:
       context: ./MaterialX
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     volumes:
       - ./MaterialX:/src
       - ./cmds:/cmds
     command:
-      - /cmds/build.sh
+      - /cmds/run.sh

@@ -1,6 +1,7 @@
 FROM ubuntu:jammy AS stage_build
 
-ARG EMSCRIPTEN_VERSION=tot
+# ARG EMSCRIPTEN_VERSION=tot
+ARG EMSCRIPTEN_VERSION=2.0.20
 ENV EMSDK /emsdk
 
 # ------------------------------------------------------------------------------
@@ -43,7 +44,7 @@ RUN cd ${EMSDK} \
 RUN echo "## Aggressive optimization: Remove debug symbols" \
     && cd ${EMSDK} && . ./emsdk_env.sh \
     # Remove debugging symbols from embedded node (extra 7MB)
-    && strip -s which node \
+    && strip -s `which node` \
     # Tests consume ~80MB disc space
     && rm -fr ${EMSDK}/upstream/emscripten/tests \
     # strip out symbols from clang (~extra 50MB disc space)
@@ -60,8 +61,8 @@ COPY --from=stage_build /emsdk /emsdk
 
 # These fallback environment variables are intended for situations where the
 # entrypoint is not utilized (as in a derived image) or overridden (e.g. when
-# using --entrypoint /bin/bash in CLI).
-# This corresponds to the env variables set during: source ./emsdk_env.sh
+# using `--entrypoint /bin/bash` in CLI).
+# This corresponds to the env variables set during: `source ./emsdk_env.sh`
 ENV EMSDK=/emsdk \
     PATH="/emsdk:/emsdk/upstream/emscripten:/emsdk/node/20.18.0_64bit/bin:${PATH}"
 
@@ -71,14 +72,15 @@ ENV EMSDK=/emsdk \
 # will not require root access level on host machine Please note that this
 # solution even if widely spread (i.e. Node.js uses it) is far from perfect as
 # user 1000:1000 might not exist on host machine, and in this case running any
-# docker image will cause other random problems (mostly due $HOME pointing to
-# /)
+# docker image will cause other random problems (mostly due `$HOME` pointing to
+# `/`)
 RUN echo "## Create emscripten user (1000:1000)" \
     && groupadd --gid 1000 emscripten \
     && useradd --uid 1000 --gid emscripten --shell /bin/bash --create-home emscripten \
     && echo "## Done"
 
 # ------------------------------------------------------------------------------
+
 
 RUN echo "## Update and install packages" \
     && apt-get -qq -y update \
@@ -102,6 +104,13 @@ RUN echo "## Update and install packages" \
         ant \
         libidn12 \
         openjdk-11-jre-headless \
+        libgl1-mesa-dev \
+        libxt-dev \
+        libxrandr-dev \
+        libxinerama-dev \
+        libxcursor-dev \
+        libxi-dev \
+        libx11-dev \
     # Standard Cleanup on Debian images
     && apt-get -y clean \
     && apt-get -y autoclean \
@@ -115,8 +124,14 @@ RUN echo "## Update and install packages" \
 
 RUN wget https://apt.kitware.com/kitware-archive.sh && chmod +x kitware-archive.sh && ./kitware-archive.sh > /dev/null
 
+RUN apt-get install -y lsb-release software-properties-common
+RUN echo "Install clang" && wget https://apt.llvm.org/llvm.sh
+RUN chmod +x llvm.sh
+RUN  ./llvm.sh
+ENV CXX /usr/bin/clang++-18
+ENV CC /usr/bin/clang-18
+
 RUN apt-get update && apt-get -qq -y install cmake
-RUN cmake --version
 # ------------------------------------------------------------------------------
 # Use commonly used /src as working directory
 WORKDIR /src
