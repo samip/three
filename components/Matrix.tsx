@@ -68,7 +68,9 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
         .then(response => response.json())
         .then(data => {
           const material = new THREE.RawShaderMaterial(data);
-          // children.material = material
+          material.uniforms = data.uniforms;
+          console.log(material);
+          children.material = material
           setMesh(children);
         });
     }
