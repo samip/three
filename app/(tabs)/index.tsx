@@ -1,16 +1,12 @@
-import { StyleSheet, View, Text } from 'react-native';
-import { Canvas } from "@react-three/fiber";
-import Matrix from '@/components/Matrix';
-import Box from '@/components/Box';
-import * as THREE from 'three';
-import { useEffect, useRef, useState } from 'react';
-import { getPigMesh } from '@/components/Pig';
 import CameraFollow from '@/components/CameraFollow';
 import CursorLight from '@/components/CursorLight';
-import { useTexture } from '@react-three/drei';
+import Matrix from '@/components/Matrix';
+import { Canvas } from '@react-three/fiber';
+import { View } from 'react-native';
+import * as THREE from 'three';
 
 export default function HomeScreen() {
-  const sphereGeometry = new THREE.SphereGeometry(5); 
+  const sphereGeometry = new THREE.SphereGeometry(5);
   const material = new THREE.MeshStandardMaterial({
     // color: 0x00ffff,
     roughness: 0.7,
@@ -18,7 +14,7 @@ export default function HomeScreen() {
   });
 
   const sphereMesh = new THREE.Mesh(sphereGeometry, material);
-  
+
   return (
     <View style={{ flex: 1 }}>
       <Canvas style={{ flex: 1, backgroundColor: '#3b3b3b' }}>

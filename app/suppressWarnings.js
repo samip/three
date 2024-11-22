@@ -8,25 +8,25 @@ export function suppressWarnings() {
     /^EXGL/,
     'pixelStorei',
   ];
-  
+
   const consoleWarn = console.warn;
-  
+
   console.warn = (...args) => {
-    const shouldSuppressWarning = warningsToSuppress.some(warning => {
+    const shouldSuppressWarning = warningsToSuppress.some((warning) => {
       if (warning instanceof RegExp) {
-        return args.some(arg => warning.test(String(arg)));
+        return args.some((arg) => warning.test(String(arg)));
       }
-      return args.some(arg => String(arg).includes(warning));
+      return args.some((arg) => String(arg).includes(warning));
     });
-    
+
     if (!shouldSuppressWarning) {
       consoleWarn(...args);
     }
   };
 
   // Convert RegExp to strings for LogBox
-  const logBoxWarnings = warningsToSuppress.map(warning => 
-    warning instanceof RegExp ? warning.source : warning
+  const logBoxWarnings = warningsToSuppress.map((warning) =>
+    warning instanceof RegExp ? warning.source : warning,
   );
 
   console.log('Suppressing warnings:', logBoxWarnings);
