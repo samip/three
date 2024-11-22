@@ -12,10 +12,7 @@
       "webRoot": "${workspaceFolder}",
       "urlFilter": "http://localhost:8081/*",
       "sourceMaps": true,
-      "resolveSourceMapLocations": [
-        "${workspaceFolder}/**",
-        "!**/node_modules/**"
-      ],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
       "sourceMapPathOverrides": {
         "webpack:///*": "${webRoot}/*"
       }
@@ -27,17 +24,11 @@
       "port": 53915,
       "url": "http://localhost:8081",
       "sourceMaps": true,
-      "resolveSourceMapLocations": [
-        "${workspaceFolder}/**",
-        "!**/node_modules/**"
-      ],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
       "sourceMapPathOverrides": {
         "webpack:///*": "${webRoot}/*"
       },
-      "runtimeArgs": [
-        "--remote-debugging-port=53915",
-        "--user-data-dir=remote-profile"
-      ]
+      "runtimeArgs": ["--remote-debugging-port=53915", "--user-data-dir=remote-profile"]
     },
     {
       "type": "expo",
