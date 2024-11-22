@@ -64,7 +64,13 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
 
   useEffect(() => {
     if (children) {
-      setMesh(children);
+      fetch('/assets/materials/carpaint.jsmat')
+        .then(response => response.json())
+        .then(data => {
+          const material = new THREE.RawShaderMaterial(data);
+          // children.material = material
+          setMesh(children);
+        });
     }
   }, [children]);
 
