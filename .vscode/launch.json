@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Attach to Chrome",
-            "port": 9222,
+            "port": 53915,
             "request": "attach",
             "type": "chrome",
             "webRoot": "${workspaceFolder}",
@@ -14,19 +14,28 @@
             "sourceMaps": true,
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/**",
+                "!**/node_modules/**"
             ],
+            "sourceMapPathOverrides": {
+                "webpack:///*": "${webRoot}/*"
+            }
         },
         {
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
+            "port": 53915,
             "url": "http://localhost:8081",
             "sourceMaps": true,
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/**",
+                "!**/node_modules/**"
             ],
+            "sourceMapPathOverrides": {
+                "webpack:///*": "${webRoot}/*"
+            },
             "runtimeArgs": [
-                "--remote-debugging-port=9222",
+                "--remote-debugging-port=53915",
                 "--user-data-dir=remote-profile"
             ]
         },
