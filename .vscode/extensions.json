@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "expo.vscode-expo-tools",
+        "adelphes.android-dev-ext",
+        "ms-vscode.js-debug-nightly",
+        "ms-vscode.vscode-typescript-next",
+        "yoavbls.pretty-ts-errors"
+    ]
+}
