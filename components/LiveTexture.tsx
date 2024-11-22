@@ -21,13 +21,13 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
     switch (type) {
       case LiveTextureType.BLACK_AND_WHITE:
         const value = Math.random() > 0.5 ? 255 : 0;
-        data[stride] = value;     // r
+        data[stride] = value; // r
         data[stride + 1] = value; // g
         data[stride + 2] = value; // b
         data[stride + 3] = alpha; // a (useless)
         break;
       case LiveTextureType.FULL_COLOR:
-        data[stride] = Math.floor(Math.random() * 256);  // r
+        data[stride] = Math.floor(Math.random() * 256); // r
         data[stride + 1] = Math.floor(Math.random() * 256); // g
         data[stride + 2] = Math.floor(Math.random() * 256); // b
         data[stride + 3] = alpha; // a (useless)
@@ -40,8 +40,8 @@ function getTextureImageData(type: LiveTextureType, position: Float = 0.0) {
         break;
       case LiveTextureType.DIAGONAL:
         const color = (x: number, y: number, position: Float) => {
-          const pos = -128 + (position * 256);
-          const distanceFromDiagonal = Math.abs( (x - pos) - (y) );
+          const pos = -128 + position * 256;
+          const distanceFromDiagonal = Math.abs(x - pos - y);
           return distanceFromDiagonal <= stripeWidth ? 0 : 255;
         };
 
@@ -96,7 +96,7 @@ export function animateTexture(mesh: THREE.Mesh) {
           gl_FragColor = vec4(vec3(color), 1.0);
         }
       `,
-      transparent: true
+      transparent: true,
     });
 
     // Animate the time uniform
@@ -111,29 +111,31 @@ export function animateTexture(mesh: THREE.Mesh) {
 }
 
 const cachedTextures = new Map<string, THREE.Texture>();
-export function generateLiveTexture(type: LiveTextureType, position: Float = 0.0) {
+export function generateLiveTexture(
+  type: LiveTextureType,
+  position: Float = 0.0,
+) {
   const cacheKey = `${type}-${position}`;
   if (cachedTextures.has(cacheKey)) {
-    return (cachedTextures.get(cacheKey) as THREE.Texture);
+    return cachedTextures.get(cacheKey) as THREE.Texture;
   }
   const data = getTextureImageData(type, position);
-  const texture = new THREE.DataTexture(
-    data,
-    width,
-    height,
-    THREE.RGBAFormat
-  );
+  const texture = new THREE.DataTexture(data, width, height, THREE.RGBAFormat);
   cachedTextures.set(cacheKey, texture);
   texture.needsUpdate = true;
   return texture;
 }
 
 export function getCanvas(type: LiveTextureType, position: Float = 0.0) {
-  const imageData = new ImageData(getTextureImageData(type, position), width, height);
-  const canvas = document.createElement("canvas");
+  const imageData = new ImageData(
+    getTextureImageData(type, position),
+    width,
+    height,
+  );
+  const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext('2d');
   if (context) {
     context.putImageData(imageData, 0, 0);
   }

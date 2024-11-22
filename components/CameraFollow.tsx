@@ -1,14 +1,17 @@
-import React, { useRef, useEffect } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
+import { OrbitControls } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
+import React, { useEffect, useRef } from 'react';
+import * as THREE from 'three';
 
 interface CameraFollowProps {
   children: React.ReactNode;
   padding?: number; // Optional padding around the target
 }
 
-export default function CameraFollow({ children, padding = 1.2 }: CameraFollowProps) {
+export default function CameraFollow({
+  children,
+  padding = 1.2,
+}: CameraFollowProps) {
   const controlsRef = useRef<any>(null);
   const groupRef = useRef<THREE.Group>(null);
   const { camera, scene } = useThree();
@@ -64,9 +67,7 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
         onChange={handleCameraMove}
         onEnd={handleCameraMoveEnd}
       />
-      <group ref={groupRef}>
-        {children}
-      </group>
+      <group ref={groupRef}>{children}</group>
     </>
   );
-} 
+}

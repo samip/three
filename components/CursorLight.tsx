@@ -1,6 +1,6 @@
-import { useThree, useFrame } from "@react-three/fiber";
-import * as THREE from 'three';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 
 export default function CursorLight() {
   const { camera, size } = useThree();
@@ -12,7 +12,7 @@ export default function CursorLight() {
       // Convert mouse position to normalized device coordinates (-1 to +1)
       setMousePos({
         x: (event.clientX / size.width) * 2 - 1,
-        y: -(event.clientY / size.height) * 2 + 1
+        y: -(event.clientY / size.height) * 2 + 1,
       });
     };
 
@@ -27,10 +27,12 @@ export default function CursorLight() {
       vector.unproject(camera);
       const dir = vector.sub(camera.position).normalize();
       const distance = 5; // Adjust this value to control how far the light is from the camera
-      
-      light.current.position.copy(camera.position.clone().add(dir.multiplyScalar(distance)));
+
+      light.current.position.copy(
+        camera.position.clone().add(dir.multiplyScalar(distance)),
+      );
     }
   });
 
   return <pointLight ref={light} intensity={1.5} distance={10} />;
-} 
+}
