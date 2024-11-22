@@ -15,6 +15,7 @@ interface MatrixProps {
 
 export default function Matrix({ children, xSize, ySize, padding = 0, renderHelpers = false }: MatrixProps) {
   const { scene } = useThree();
+  
   /*
   const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
     '/assets/textures/bricks.jpg',
@@ -23,7 +24,6 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
     '/assets/textures/diagonal_rainbow.webp'
   ]);
   */
-
   const meshAnimations = new Map<number, any>();
 
   const [mesh, setMesh] = useState<THREE.Mesh>();
@@ -32,7 +32,10 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
 
   const getBoxMesh = () => {
     const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    
+    // Parse the material from JSON
     const boxMaterial = new THREE.MeshStandardMaterial();
+    
     return new THREE.Mesh(boxGeometry, boxMaterial);
   }
 
@@ -64,15 +67,7 @@ export default function Matrix({ children, xSize, ySize, padding = 0, renderHelp
 
   useEffect(() => {
     if (children) {
-      fetch('/assets/materials/carpaint.jsmat')
-        .then(response => response.json())
-        .then(data => {
-          const material = new THREE.RawShaderMaterial(data);
-          material.uniforms = data.uniforms;
-          console.log(material);
-          children.material = material
-          setMesh(children);
-        });
+      setMesh(children);
     }
   }, [children]);
 
