@@ -45,7 +45,6 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     const normalMatrix = new THREE.Matrix3();
     normalMatrix.getNormalMatrix(mesh.matrixWorld);
     material.uniforms.normalMatrix.value.copy(normalMatrix);
-    console.log(material.uniforms);
   };
 
   onControlsChange((e: any) => { controlsChanged(e) });
@@ -220,7 +219,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     };
     const material = new THREE.RawShaderMaterial(emptyShader);
     mesh.material = material;
-    console.log('Mesh materia setl:', mesh.material);
+    console.log('Mesh materia set:', mesh.material);
     return mesh;
   }
 
