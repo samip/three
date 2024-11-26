@@ -52,7 +52,7 @@ export default function Matrix({
 
   const defaultMesh = getBoxMesh();
 
-  const onChildBeforeRender = (mesh: THREE.Mesh, x: number, y: number) => {
+  const onChildBeforeRender = (mesh: THREE.Mesh, _x: number, _y: number) => {
     if (mesh.material instanceof THREE.MeshStandardMaterial) {
     }
   };
@@ -116,12 +116,9 @@ export default function Matrix({
   return (
     <React.Fragment>
       {boxes.map((row, x) =>
-        boxes.map((row, x) =>
-          row.map((mesh, y) => (
-            // eslint-disable-next-line react/no-unknown-property
-            <primitive key={`${x}-${y}`} object={mesh} />
-          )),
-        ),
+        row.map((mesh, y) => (
+          <primitive key={`${x}-${y}`} object={mesh} />
+        )),
       )}
     </React.Fragment>
   );

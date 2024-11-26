@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei/native';
 import { Canvas } from '@react-three/fiber/native';
-import { Suspense } from 'react';
+import { Suspense, useRef } from 'react';
 
 import { View } from 'react-native';
 import Pig from '../../components/Pig';
@@ -19,6 +19,19 @@ const ThreeDModelScreen = () => {
     { position: [1, 10, 15], intensity: 1, castShadow: false }
   ];
 
+  const onControlsChangeEventHandlers = useRef<((e: any) => void)[]>([]);
+
+  const addOnControlsChangeEventHandler = (handler: (e: any) => void) => {
+    console.log('Adding handler', handler);
+    onControlsChangeEventHandlers.current.push(handler);
+  };
+
+  const onControlsChange = (e: any) => {
+    onControlsChangeEventHandlers.current.forEach((handler) => {
+      handler(e);
+    });
+  };
+
   const renderPigCanvas = () => {
     return (
       <Canvas shadows>
@@ -30,10 +43,10 @@ const ThreeDModelScreen = () => {
             castShadow={light.castShadow}
           />
         ))}
+        <OrbitControls onChange={onControlsChange} enableZoom={true} />
         <Suspense fallback={null}>
-          <Pig />
+          <Pig onControlsChange={addOnControlsChangeEventHandler} />
         </Suspense>
-        <OrbitControls enableZoom={true} />
       </Canvas>
     );
   };

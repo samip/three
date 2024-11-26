@@ -45,5 +45,6 @@ export default function Box({ position = [0, 0, 0] }: BoxProps) {
   }, []);
 
   const mesh = new THREE.Mesh();
+  mesh.position.set(...position);
   return mesh;
 }
