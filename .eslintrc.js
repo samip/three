@@ -4,5 +4,6 @@ module.exports = {
   ignorePatterns: ['tools/', 'lib/'],
   rules: {
     indent: ['warn', 2, { SwitchCase: 1 }],
+    'react/no-unknown-property': 'off'
   },
 };
