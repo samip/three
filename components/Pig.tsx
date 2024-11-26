@@ -121,9 +121,6 @@ export default function Pig() {
   } 
 
   async function setMaterial(mesh: THREE.Mesh) {
-    const response = await fetch('/assets/materials/carpaint.jsmat');
-    const _data = response.json();
-
     const emptyShader = {
       glslVersion: THREE.GLSL3,
       uniforms: {
