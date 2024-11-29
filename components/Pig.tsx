@@ -3,15 +3,14 @@ import { useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { useEffect, useMemo, useRef } from 'react';
-import { GLTF } from 'three-stdlib';
 import { setMaterial } from '../lib/ShaderMaterial';
 
 export default function Pig({ onControlsChange }: { onControlsChange: (e: any) => void }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
   camera.position.set(15, 0, 0);
   const asset = Asset.fromModule(require('../assets/models/shark.glb'));
   const gltf = useGLTF(asset.uri);
-  window.gltf = gltf;
   const sceneRef = useRef<THREE.Object3D>(gltf.scene);
   const [_colorMap, bricksMap] = useTexture(['/assets/textures/netmesh.png', '/assets/textures/bricks.jpg']);
 
@@ -21,12 +20,9 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     }
     let mesh: THREE.Mesh | null = null;
     sceneRef.current.traverse((child: THREE.Object3D) => {
-      if (child.isMesh) {
-        if (!mesh) {
-          mesh = child as THREE.Mesh;
-          mesh.material = gltf.materials[""];
-          console.log('Mesh found:', child);
-        }
+      if (!mesh && child instanceof THREE.Mesh) {
+        mesh = child;
+        console.log('Mesh found:', child);
       }
     });
     if (!mesh) {
@@ -39,6 +35,8 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
 
   const controlsChanged = (e: any) => {
     const camera = e.target.object;
+    (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
+  
     if (!mesh) {
       return;
     }
@@ -69,7 +67,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
 
   useEffect(() => {
     const asyncFunc = async () => {
-      // await setMaterial(mesh, bricksMap, camera);
+      await setMaterial(mesh, bricksMap, camera);
     };
     setTimeout(asyncFunc, 1000);
   });

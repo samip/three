@@ -68,7 +68,6 @@ export async function setMaterial(mesh: THREE.Mesh, map: THREE.Texture, camera: 
   };
   const material = new THREE.RawShaderMaterial(emptyShader);
   mesh.material = material;
-  console.log('Mesh materia set:', mesh.material);
   return mesh;
 }
 
