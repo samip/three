@@ -12,7 +12,7 @@ const config = getDefaultConfig(__dirname);
   }
 });
 
-['glb', 'gltf', 'png', 'jpg', 'jsmat'].forEach((ext) => {
+['glb', 'gltf', 'png', 'jpg', 'jsmat', 'hdr', 'mtlx'].forEach((ext) => {
   if (config.resolver.assetExts.indexOf(ext) === -1) {
     config.resolver.assetExts.push(ext);
   }

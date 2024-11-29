@@ -115,11 +115,7 @@ export default function Matrix({
 
   return (
     <React.Fragment>
-      {boxes.map((row, x) =>
-        row.map((mesh, y) => (
-          <primitive key={`${x}-${y}`} object={mesh} />
-        )),
-      )}
+      {boxes.map((row, x) => row.map((mesh, y) => <primitive key={`${x}-${y}`} object={mesh} />))}
     </React.Fragment>
   );
 }

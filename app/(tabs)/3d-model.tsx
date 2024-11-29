@@ -17,7 +17,7 @@ const ThreeDModelScreen = () => {
   const lights: Light[] = [
     { position: [500, 10, 15], intensity: 1, castShadow: true },
     { position: [-100, 10, 15], intensity: 1, castShadow: false },
-    { position: [1, 10, 15], intensity: 1, castShadow: false }
+    { position: [1, 10, 15], intensity: 1, castShadow: false },
   ];
 
   const onControlsChangeEventHandlers = useRef<((e: any) => void)[]>([]);
