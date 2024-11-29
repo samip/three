@@ -45,5 +45,7 @@ yarn-error.*
 *.tsbuildinfo
 
 remote-profile/
-
+assets/
+*.swp
+entry.bundle*
 # @end expo-cli
