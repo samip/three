@@ -12,6 +12,7 @@ type Light = {
 };
 
 const ThreeDModelScreen = () => {
+  const orbitControlsRef = useRef<typeof OrbitControls>(null);
 
   const lights: Light[] = [
     { position: [500, 10, 15], intensity: 1, castShadow: true },
@@ -43,7 +44,7 @@ const ThreeDModelScreen = () => {
             castShadow={light.castShadow}
           />
         ))}
-        <OrbitControls onChange={onControlsChange} enableZoom={true} />
+        <OrbitControls ref={orbitControlsRef} onChange={onControlsChange} enableZoom={true} />
         <Suspense fallback={null}>
           <Pig onControlsChange={addOnControlsChangeEventHandler} />
         </Suspense>
