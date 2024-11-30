@@ -3,6 +3,7 @@ import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { RGBELoader } from 'three-stdlib';
+import { getMaterialXTexture } from '../lib/MaterialX';
 
 export default function Scene() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,9 +49,27 @@ export default function Scene() {
         capabilities,
       );
 
-      radianceTextureRef.current = processedRadiance;
-      irradianceTextureRef.current = processedIrradiance;
-      setBackgroundTexture(radianceTexture);
+        const processedRadiance = prepareEnvTexture(radianceTexture as THREE.Texture, capabilities);
+        const processedIrradiance = prepareEnvTexture(
+          irradianceTexture as THREE.Texture,
+          capabilities,
+        );
+
+        radianceTextureRef.current = processedRadiance;
+        irradianceTextureRef.current = processedIrradiance;
+
+        scene.add(cube);
+        const material: THREE.RawShaderMaterial = getMaterialXTexture(
+          radianceTexture,
+          irradianceTexture,
+        );
+        cube.material = material;
+        console.log(material);
+        setBackgroundTexture(radianceTexture);
+      } catch (error) {
+        console.error('Error loading textures:', error);
+        throw error;
+      }
     };
 
     if (!radianceTextureRef.current || !irradianceTextureRef.current) { 

@@ -6,13 +6,13 @@ const { getDefaultConfig } = require('expo/metro-config');
 /* eslint-disable no-undef */
 const config = getDefaultConfig(__dirname);
 
-[('js', 'jsx', 'json', 'ts', 'tsx', 'cjs', 'mjs')].forEach((ext) => {
+[('js', 'jsx', 'json', 'ts', 'tsx', 'cjs', 'mjs' , 'wasm', 'data', 'json')].forEach((ext) => {
   if (config.resolver.sourceExts.indexOf(ext) === -1) {
     config.resolver.sourceExts.push(ext);
   }
 });
 
-['glb', 'gltf', 'png', 'jpg', 'jsmat', 'hdr', 'mtlx'].forEach((ext) => {
+['glb', 'gltf', 'png', 'jpg', 'jsmat', 'hdr', 'json'].forEach((ext) => {
   if (config.resolver.assetExts.indexOf(ext) === -1) {
     config.resolver.assetExts.push(ext);
   }
