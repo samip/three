@@ -13,7 +13,7 @@ type Light = {
 };
 
 const ThreeDModelScreen = () => {
-  const orbitControlsRef = useRef<typeof OrbitControls>(null);
+  const orbitControlsRef = useRef<any>(null);
 
   const lights: Light[] = [
     { position: [500, 10, 15], intensity: 1, castShadow: true },
