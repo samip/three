@@ -1,4 +1,20 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.tabSize": 2
+},
+{
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "hb432.prettier-eslint-typescript",
+  "editor.formatOnType": false, // required
+  "editor.formatOnPaste": true, // optional
+  "editor.formatOnSave": true, // optional
+  "editor.formatOnSaveMode": "file", // required to format on save
+  "files.autoSave": "onFocusChange", // optional but recommended
+  "vs-code-prettier-eslint.prettierLast": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
