@@ -4,6 +4,7 @@ import { Suspense, useRef } from 'react';
 
 import { View } from 'react-native';
 import Pig from '../../components/Pig';
+import Scene from '@/components/Scene';
 
 type Light = {
   position: [number, number, number];
@@ -45,6 +46,7 @@ const ThreeDModelScreen = () => {
           />
         ))}
         <OrbitControls ref={orbitControlsRef} onChange={onControlsChange} enableZoom={true} />
+        <Scene></Scene>
         <Suspense fallback={null}>
           <Pig onControlsChange={addOnControlsChangeEventHandler} />
         </Suspense>
