@@ -1,9 +1,10 @@
 import { getMaterialXTexture, updateDynamicUniforms } from '@/lib/MaterialX';
+import { OrbitControls } from '@/lib/vendor/OrbitControls';
+import { RGBELoader } from '@/lib/vendor/RGBELoader';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
-import { OrbitControls, RGBELoader } from 'three-stdlib';
 
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
