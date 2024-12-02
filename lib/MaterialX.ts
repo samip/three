@@ -45,3 +45,32 @@ export function getMaterialXTexture(
   };
   return new THREE.RawShaderMaterial(materialParams);
 }
+
+export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
+  const normalMat = new THREE.Matrix3();
+  const viewProjMat = new THREE.Matrix4();
+  const worldViewPos = new THREE.Vector3();
+
+  if (!(mesh?.material instanceof THREE.ShaderMaterial)) {
+    return;
+  }
+  const material = mesh.material;
+  const uniforms = material.uniforms;
+  uniforms.u_worldMatrix.value = mesh.matrixWorld;
+  uniforms.u_viewProjectionMatrix.value = viewProjMat.multiplyMatrices(
+    camera.projectionMatrix,
+    camera.matrixWorldInverse
+  );
+
+  uniforms.u_viewPosition.value = camera.getWorldPosition(worldViewPos);
+
+  uniforms.u_worldInverseTransposeMatrix.value =
+    new THREE.Matrix4().setFromMatrix3(
+      normalMat.getNormalMatrix(mesh.matrixWorld)
+    );
+
+  mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
+  mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
+  mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
+  mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
+}

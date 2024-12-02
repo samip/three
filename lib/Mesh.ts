@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
   const material = mesh.material as THREE.ShaderMaterial;
@@ -12,8 +12,8 @@ export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
   material.uniforms.normalMatrix.value.copy(normalMatrix);
 }
 
-function calculateMissingGeometry(mesh: THREE.Mesh) {
-  const flipV = true;
+export function calculateMissingGeometry(mesh: THREE.Mesh) {
+  const flipV = false;
   if (!mesh.geometry.attributes.uv) {
     const posCount = mesh.geometry.attributes.position.count;
     const uvs = [];
@@ -28,7 +28,10 @@ function calculateMissingGeometry(mesh: THREE.Mesh) {
         uvs.push((pos[i * 3] - bsphere.center.x) / bsphere.radius);
         uvs.push((pos[i * 3 + 1] - bsphere.center.y) / bsphere.radius);
       }
-      mesh.geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+      mesh.geometry.setAttribute(
+        "uv",
+        new THREE.BufferAttribute(new Float32Array(uvs), 2)
+      );
     }
   } else if (flipV) {
     const uvCount = mesh.geometry.attributes.position.count;

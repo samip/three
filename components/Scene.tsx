@@ -1,11 +1,12 @@
+import { getMaterialXTexture, updateDynamicUniforms } from '@/lib/MaterialX';
+import { calculateMissingGeometry } from '@/lib/Mesh';
 import { useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { RGBELoader } from 'three-stdlib';
-import { getMaterialXTexture } from '../lib/MaterialX';
 
-export default function Scene() {
+export default function Scene({ onControlsChange }: { onControlsChange: (e: any) => void }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
   const radianceTextureRef = useRef<THREE.Texture | null>(
@@ -39,33 +40,30 @@ export default function Scene() {
       const hdrLoader = new RGBELoader();
       const capabilities = gl.capabilities;
 
-      const assetRadiance = Asset.fromModule(require('../assets/lights/goegap.hdr'));
-      const assetIrradiance = Asset.fromModule(require('../assets/lights/irradiance/goegap.hdr'));
-      const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
-      const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
-      const processedRadiance = prepareEnvTexture(radianceTexture as THREE.Texture, capabilities);
-      const processedIrradiance = prepareEnvTexture(
-        irradianceTexture as THREE.Texture,
-        capabilities,
-      );
-
-        const processedRadiance = prepareEnvTexture(radianceTexture as THREE.Texture, capabilities);
-        const processedIrradiance = prepareEnvTexture(
-          irradianceTexture as THREE.Texture,
-          capabilities,
+      try {
+        const assetRadiance = Asset.fromModule(
+          require('../assets/lights/san_giuseppe_bridge_split.hdr'),
         );
+        const assetIrradiance = Asset.fromModule(
+          require('../assets/lights/irradiance/san_giuseppe_bridge_split.hdr'),
+        );
+        const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
+        const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
 
+        const processedRadiance = prepareEnvTexture(radianceTexture, capabilities);
+        const processedIrradiance = prepareEnvTexture(irradianceTexture, capabilities);
         radianceTextureRef.current = processedRadiance;
         irradianceTextureRef.current = processedIrradiance;
-
-        scene.add(cube);
-        const material: THREE.RawShaderMaterial = getMaterialXTexture(
-          radianceTexture,
-          irradianceTexture,
-        );
-        cube.material = material;
-        console.log(material);
         setBackgroundTexture(radianceTexture);
+        // return;
+        const cube = addCube();
+        calculateMissingGeometry(cube);
+        // scene.add(cube);
+        const material = getMaterialXTexture(radianceTexture, irradianceTexture);
+        cube.material = material;
+        updateDynamicUniforms(cube, camera);
+        scene.add(cube);
+        gl.render(scene, camera);
       } catch (error) {
         console.error('Error loading textures:', error);
         throw error;
