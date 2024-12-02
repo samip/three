@@ -1,3 +1,6 @@
+import { suppressWarnings } from './suppressWarnings';
+
+suppressWarnings();
 
 // // register root component tp expo-router/entry
 

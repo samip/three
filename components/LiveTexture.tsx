@@ -1,5 +1,5 @@
 import { Float } from 'react-native/Libraries/Types/CodegenTypes';
-import { THREE } from 'expo-three';
+import * as THREE from 'three';
 
 const width = 128;
 const height = 128;
