@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from 'expo-three';
 
 export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
   const material = mesh.material as THREE.ShaderMaterial;

@@ -14,14 +14,7 @@ export default function Scene() {
     null,
   ) as MutableRefObject<THREE.Texture | null>;
 
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-  );
-  scene.add(cube);
-
   useEffect(() => {
-
     const setBackgroundTexture = (texture: THREE.Texture) => {
       const bgTexture = new THREE.DataTexture(
         texture.image.data,
@@ -33,34 +26,29 @@ export default function Scene() {
       bgTexture.mapping = THREE.EquirectangularReflectionMapping;
       scene.background = bgTexture;
     };
+
     const loadEnvTextures = async () => {
       const hdrLoader = new RGBELoader();
-      const fileLoader = new THREE.FileLoader();
       const capabilities = gl.capabilities;
 
-      try {
-        const assetRadiance = Asset.fromModule(require('../assets/lights/goegap.hdr'));
-        const assetIrradiance = Asset.fromModule(require('../assets/lights/irradiance/goegap.hdr'));
-        const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
-        const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
-        const _lightRigXml = await fileLoader.loadAsync('lights/san_giuseppe_bridge_split.mtlx');
+      const assetRadiance = Asset.fromModule(require('../assets/lights/goegap.hdr'));
+      const assetIrradiance = Asset.fromModule(require('../assets/lights/irradiance/goegap.hdr'));
+      const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
+      const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
+      const processedRadiance = prepareEnvTexture(radianceTexture as THREE.Texture, capabilities);
+      const processedIrradiance = prepareEnvTexture(
+        irradianceTexture as THREE.Texture,
+        capabilities,
+      );
 
-        const processedRadiance = prepareEnvTexture(radianceTexture as THREE.Texture, capabilities);
-        const processedIrradiance = prepareEnvTexture(
-          irradianceTexture as THREE.Texture,
-          capabilities,
-        );
-
-        radianceTextureRef.current = processedRadiance;
-        irradianceTextureRef.current = processedIrradiance;
-        setBackgroundTexture(radianceTexture);
-      } catch (error) {
-        console.error('Error loading textures:', error);
-        throw error;
-      }
+      radianceTextureRef.current = processedRadiance;
+      irradianceTextureRef.current = processedIrradiance;
+      setBackgroundTexture(radianceTexture);
     };
 
-    loadEnvTextures();
+    if (!radianceTextureRef.current || !irradianceTextureRef.current) { 
+      loadEnvTextures();
+    }
   }, [gl.capabilities, scene]);
 
 
@@ -73,7 +61,7 @@ export default function Scene() {
       texture.type,
     );
     newTexture.wrapS = THREE.RepeatWrapping;
-    newTexture.anisotropy = capabilities.getMaxAnisotropy();
+    // newTexture.anisotropy = capabilities.getMaxAnisotropy();
     newTexture.minFilter = THREE.LinearMipmapLinearFilter;
     newTexture.magFilter = THREE.LinearFilter;
     newTexture.generateMipmaps = true;

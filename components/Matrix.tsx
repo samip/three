@@ -1,7 +1,7 @@
 import { useThree } from '@react-three/fiber';
 import React, { useMemo } from 'react';
-import * as THREE from 'three';
-import { AxesHelper, GridHelper } from 'three';
+import { THREE } from 'expo-three';
+import { AxesHelper, GridHelper } from 'expo-three';
 import { animateTexture } from './LiveTexture';
 
 interface MatrixProps {

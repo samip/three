@@ -1,9 +1,13 @@
 export default ({ config }) => ({
   ...config,
   expo: {
+    scheme: 'com.spell.three',
     android: {
       package: 'com.spell.three',
       applicationId: 'com.spell.three',
+    },
+    ios: {
+      bundleIdentifier: 'com.spell.three',
     },
     extra: {
       eas: {
