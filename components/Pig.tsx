@@ -12,7 +12,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
   const asset = Asset.fromModule(require('../assets/models/shark.glb'));
   const gltf = useGLTF(asset.uri);
   const sceneRef = useRef<THREE.Object3D>(gltf.scene);
-  const [_colorMap, bricksMap] = useTexture([
+  const [_colorMap, _bricksMap] = useTexture([
     '/assets/textures/netmesh.png',
     '/assets/textures/bricks.jpg',
   ]);

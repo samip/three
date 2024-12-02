@@ -48,12 +48,11 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
     });
   }, [camera, padding, children, scene]);
 
-  const handleCameraMove = () => {
+  const _handleCameraMove = () => {
     // Actions to perform whenever the camera moves
-    // console.log(camera.position);
   };
 
-  const handleCameraMoveEnd = () => {
+  const _handleCameraMoveEnd = () => {
     // Actions to perform when the camera stops moving
   };
 

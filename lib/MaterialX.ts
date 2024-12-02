@@ -1,5 +1,4 @@
 import { THREE } from "expo-three";
-import data from "../assets/materials/carpaint.matx.json";
 import threeUniforms from "./shaders/gltf_pbr_gold/uniforms";
 import vShader from "./shaders/gltf_pbr_gold/vertex";
 import fShader from "./shaders/gltf_pbr_gold/fragment";

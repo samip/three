@@ -18,7 +18,7 @@ export default function ThreeDModelScreen() {
     <View style={{ flex: 1 }}>
       <Canvas shadows>
         <Scene mesh={getCube()} />
-        <primitive object={getCube()} />
+        {/* <primitive object={getCube()} /> */}
         {/* <Pig onControlsChange={addOnControlsChangeEventHandler}></Pig> */}
       </Canvas>
     </View>

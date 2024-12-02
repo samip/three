@@ -4,15 +4,15 @@ import { RGBELoader } from '@/lib/vendor/RGBELoader';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
   const renderNeeded = useRef(true);
-  const lightData = [
+  const [lightData] = useState([
     { position: [0, 0, 100], intensity: 1, castShadow: true, direction: [0, 0, 0] },
-  ];
+  ]);
 
   const radianceTextureRef = useRef<THREE.Texture | null>(
     null,
@@ -66,25 +66,20 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
         const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
         mesh.material = material;
         camera.position.set(100, 0, 0);
+        // needs to be called after camera position is set
+        orbitControlsRef.current.update();
         updateDynamicUniforms(mesh, camera);
-        // mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
-        // mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
-        // mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
-        // mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
-        if (orbitControlsRef.current) {
-          orbitControlsRef.current.update();
-        }
         scene.add(mesh);
-        gl.render(scene, camera);
+        renderNeeded.current = true;
       }
     };
 
     if (!radianceTextureRef.current || !irradianceTextureRef.current) {
       loadEnvTextures();
     }
-  }, [gl.capabilities, scene]);
+  }, [gl.capabilities, scene, camera, mesh, lightData]);
 
-  const prepareEnvTexture = (texture: THREE.Texture, capabilities: THREE.WebGLCapabilities) => {
+  const prepareEnvTexture = (texture: THREE.Texture, _capabilities: THREE.WebGLCapabilities) => {
     let newTexture = new THREE.DataTexture(
       texture.image.data,
       texture.image.width,
