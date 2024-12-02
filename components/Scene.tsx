@@ -3,7 +3,7 @@ import { useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
-import { RGBELoader } from 'three-stdlib';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
 export default function Scene({
   onControlsChange,
@@ -36,6 +36,7 @@ export default function Scene({
   // Initial setup effect - runs once on mount
   useEffect(() => {
     const setBackgroundTexture = (texture: THREE.Texture) => {
+      return;
       const bgTexture = new THREE.DataTexture(
         texture.image.data,
         texture.image.width,
@@ -51,36 +52,32 @@ export default function Scene({
       const hdrLoader = new RGBELoader();
       const capabilities = gl.capabilities;
 
-      try {
-        const assetRadiance = Asset.fromModule(
-          require('../assets/lights/san_giuseppe_bridge_split.hdr'),
-        );
-        const assetIrradiance = Asset.fromModule(
-          require('../assets/lights/irradiance/san_giuseppe_bridge_split.hdr'),
-        );
-        const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
-        const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
+      const assetRadiance = Asset.fromModule(
+        require('../assets/lights/san_giuseppe_bridge_split.hdr'),
+      );
+      const assetIrradiance = Asset.fromModule(
+        require('../assets/lights/irradiance/san_giuseppe_bridge_split.hdr'),
+      );
+      const radianceTexture = await hdrLoader.loadAsync(assetRadiance.uri);
+      const irradianceTexture = await hdrLoader.loadAsync(assetIrradiance.uri);
 
-        const processedRadiance = prepareEnvTexture(radianceTexture, capabilities);
-        const processedIrradiance = prepareEnvTexture(irradianceTexture, capabilities);
-        radianceTextureRef.current = processedRadiance;
-        irradianceTextureRef.current = processedIrradiance;
-        setBackgroundTexture(radianceTexture);
-        // return;
-        if (mesh) {
-          const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
-          mesh.material = material;
-          updateDynamicUniforms(mesh, camera);
-          scene.add(mesh);
-          gl.render(scene, camera);
-        }
-      } catch (error) {
-        console.error('Error loading textures:', error);
-        throw error;
+      const processedRadiance = prepareEnvTexture(radianceTexture, capabilities);
+      const processedIrradiance = prepareEnvTexture(irradianceTexture, capabilities);
+      radianceTextureRef.current = processedRadiance;
+      irradianceTextureRef.current = processedIrradiance;
+      setBackgroundTexture(radianceTexture);
+      // return;
+      if (mesh) {
+        const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
+        mesh.material = material;
+        updateDynamicUniforms(mesh, camera);
+        scene.add(mesh);
+        camera.position.set(0, 0, 100);
+        gl.render(scene, camera);
       }
     };
 
-    if (!radianceTextureRef.current || !irradianceTextureRef.current) { 
+    if (!radianceTextureRef.current || !irradianceTextureRef.current) {
       loadEnvTextures();
     }
   }, [gl.capabilities, scene]);

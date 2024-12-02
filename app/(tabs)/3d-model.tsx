@@ -1,19 +1,12 @@
 import Scene from '@/components/Scene';
 import { calculateMissingGeometry } from '@/lib/Mesh';
-import { OrbitControls } from '@react-three/drei/native';
 import { Canvas } from '@react-three/fiber/native';
 import { THREE } from 'expo-three';
 import { useRef } from 'react';
 import { View } from 'react-native';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
-type Light = {
-  position: [number, number, number];
-  intensity: number;
-  castShadow: boolean;
-};
-
-const ThreeDModelScreen = () => {
+export default function ThreeDModelScreen() {
   const orbitControlsRef = useRef<any>(null);
   const onControlsChangeEventHandlers = useRef<((e: any) => void)[]>([]);
 
@@ -26,7 +19,7 @@ const ThreeDModelScreen = () => {
   };
 
   const addOnControlsChangeEventHandler = (handler: (e: any) => void) => {
-    onControlsChangeEventHandlers.current.push(handler);
+    // onControlsChangeEventHandlers.current.push(handler);
   };
 
   const onControlsChange = (e: any) => {
@@ -34,18 +27,17 @@ const ThreeDModelScreen = () => {
       handler(e);
     });
   };
+  // const orbitControls = new OrbitControls(camera, renderer.domElement);
 
   const renderPigCanvas = () => {
     return (
       <Canvas shadows>
-        <OrbitControls ref={orbitControlsRef} onChange={onControlsChange} enableZoom={true} />
         <Scene onControlsChange={addOnControlsChangeEventHandler} mesh={getCube()} />
+        <primitive object={getCube()} />
         {/* <Pig onControlsChange={addOnControlsChangeEventHandler}></Pig> */}
       </Canvas>
     );
   };
 
   return <View style={{ flex: 1 }}>{renderPigCanvas()}</View>;
-};
-
-export default ThreeDModelScreen;
+}

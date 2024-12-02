@@ -1,7 +1,7 @@
-import { OrbitControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { THREE } from 'expo-three';
 import React, { useEffect, useRef } from 'react';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface CameraFollowProps {
   children: React.ReactNode;
@@ -59,7 +59,7 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
 
   return (
     <>
-      <OrbitControls ref={controlsRef} onChange={handleCameraMove} onEnd={handleCameraMoveEnd} />
+      {/* <OrbitControls ref={controlsRef} onChange={handleCameraMove} onEnd={handleCameraMoveEnd} /> */}
       <group ref={groupRef}>{children}</group>
     </>
   );
