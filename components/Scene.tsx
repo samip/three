@@ -1,21 +1,15 @@
 import { getMaterialXTexture, updateDynamicUniforms } from '@/lib/MaterialX';
-import { useThree } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei/native';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
-export default function Scene({
-  onControlsChange,
-  mesh,
-}: {
-  onControlsChange: (e: any) => void;
-  mesh?: THREE.Mesh;
-}) {
+export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
-  camera.position.set(0, 0, 100);
-
+  const renderNeeded = useRef(true);
   const lightData = [
     { position: [0, 0, 100], intensity: 1, castShadow: true, direction: [0, 0, 0] },
   ];
@@ -36,7 +30,6 @@ export default function Scene({
   // Initial setup effect - runs once on mount
   useEffect(() => {
     const setBackgroundTexture = (texture: THREE.Texture) => {
-      return;
       const bgTexture = new THREE.DataTexture(
         texture.image.data,
         texture.image.width,
@@ -66,13 +59,20 @@ export default function Scene({
       radianceTextureRef.current = processedRadiance;
       irradianceTextureRef.current = processedIrradiance;
       setBackgroundTexture(radianceTexture);
-      // return;
+      renderNeeded.current = true;
       if (mesh) {
         const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
         mesh.material = material;
+        camera.position.set(100, 0, 0);
         updateDynamicUniforms(mesh, camera);
+        // mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
+        // mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
+        // mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
+        // mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
+        if (orbitControlsRef.current) {
+          orbitControlsRef.current.update();
+        }
         scene.add(mesh);
-        camera.position.set(0, 0, 100);
         gl.render(scene, camera);
       }
     };
@@ -91,6 +91,7 @@ export default function Scene({
       texture.type,
     );
     newTexture.wrapS = THREE.RepeatWrapping;
+    // TODO: figure out why this doesn't work on Android
     // newTexture.anisotropy = capabilities.getMaxAnisotropy();
     newTexture.minFilter = THREE.LinearMipmapLinearFilter;
     newTexture.magFilter = THREE.LinearFilter;
@@ -100,5 +101,18 @@ export default function Scene({
 
     return newTexture;
   };
-  return <></>;
+  return (
+    <>
+      <OrbitControls
+        ref={orbitControlsRef}
+        onChange={() => {
+          if (mesh) {
+            updateDynamicUniforms(mesh, camera);
+            renderNeeded.current = true;
+            // gl.render(scene, camera);
+          }
+        }}
+      />
+    </>
+  );
 }

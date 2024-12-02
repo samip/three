@@ -69,9 +69,4 @@ export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
     new THREE.Matrix4().setFromMatrix3(
       normalMat.getNormalMatrix(mesh.matrixWorld)
     );
-
-  mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
-  mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
-  mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
-  mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
 }

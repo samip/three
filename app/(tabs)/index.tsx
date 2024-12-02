@@ -21,7 +21,7 @@ export default function HomeScreen() {
       <Canvas style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <CursorLight />
         <CameraFollow padding={1.2}>
-          <Scene onControlsChange={() => {}} />
+          <Scene />
           <Matrix padding={0.1} xSize={8} ySize={8}>
             {sphereMesh}
           </Matrix>
