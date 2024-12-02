@@ -1,10 +1,9 @@
 import { getMaterialXTexture, updateDynamicUniforms } from '@/lib/MaterialX';
-import { OrbitControls } from '@react-three/drei/native';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
+import { OrbitControls, RGBELoader } from 'three-stdlib';
 
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,6 +16,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   const radianceTextureRef = useRef<THREE.Texture | null>(
     null,
   ) as MutableRefObject<THREE.Texture | null>;
+
   const irradianceTextureRef = useRef<THREE.Texture | null>(
     null,
   ) as MutableRefObject<THREE.Texture | null>;
@@ -38,7 +38,8 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
         texture.type,
       ).copy(texture);
       bgTexture.mapping = THREE.EquirectangularReflectionMapping;
-      scene.background = bgTexture;
+      backgroundTextureRef.current = bgTexture;
+      scene.background = backgroundTextureRef.current;
     };
 
     const loadEnvTextures = async () => {
@@ -101,18 +102,5 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
 
     return newTexture;
   };
-  return (
-    <>
-      <OrbitControls
-        ref={orbitControlsRef}
-        onChange={() => {
-          if (mesh) {
-            updateDynamicUniforms(mesh, camera);
-            renderNeeded.current = true;
-            // gl.render(scene, camera);
-          }
-        }}
-      />
-    </>
-  );
+  return <></>;
 }
