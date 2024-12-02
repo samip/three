@@ -1,17 +1,5 @@
 import * as THREE from "three";
 
-export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
-  const material = mesh.material as THREE.ShaderMaterial;
-  material.uniforms.modelMatrix.value.copy(mesh.matrixWorld);
-  material.uniforms.viewMatrix.value.copy(camera.matrixWorldInverse);
-  material.uniforms.projectionMatrix.value.copy(camera.projectionMatrix);
-
-  // Update normal matrix
-  const normalMatrix = new THREE.Matrix3();
-  normalMatrix.getNormalMatrix(mesh.matrixWorld);
-  material.uniforms.normalMatrix.value.copy(normalMatrix);
-}
-
 export function calculateMissingGeometry(mesh: THREE.Mesh) {
   const flipV = false;
   if (!mesh.geometry.attributes.uv) {
@@ -45,16 +33,18 @@ export function calculateMissingGeometry(mesh: THREE.Mesh) {
   if (!mesh.geometry.attributes.normal) {
     mesh.geometry.computeVertexNormals();
   }
-
   if (mesh.geometry.getIndex()) {
     if (!mesh.geometry.attributes.tangent) {
       mesh.geometry.computeTangents();
     }
   }
+
   // Use default MaterialX naming convention.
   // TODO: figure out what these are for (MaterialX?)
-  // mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
-  // mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
-  // mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
-  // mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
+  mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
+  mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
+  if (mesh.geometry.attributes.tangent) {
+    mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
+  }
+  mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
 }

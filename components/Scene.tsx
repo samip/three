@@ -1,14 +1,25 @@
 import { getMaterialXTexture, updateDynamicUniforms } from '@/lib/MaterialX';
-import { calculateMissingGeometry } from '@/lib/Mesh';
 import { useThree } from '@react-three/fiber';
 import { Asset } from 'expo-asset';
 import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { RGBELoader } from 'three-stdlib';
 
-export default function Scene({ onControlsChange }: { onControlsChange: (e: any) => void }) {
+export default function Scene({
+  onControlsChange,
+  mesh,
+}: {
+  onControlsChange: (e: any) => void;
+  mesh?: THREE.Mesh;
+}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
+  camera.position.set(0, 0, 100);
+
+  const lightData = [
+    { position: [0, 0, 100], intensity: 1, castShadow: true, direction: [0, 0, 0] },
+  ];
+
   const radianceTextureRef = useRef<THREE.Texture | null>(
     null,
   ) as MutableRefObject<THREE.Texture | null>;
@@ -56,14 +67,13 @@ export default function Scene({ onControlsChange }: { onControlsChange: (e: any)
         irradianceTextureRef.current = processedIrradiance;
         setBackgroundTexture(radianceTexture);
         // return;
-        const cube = addCube();
-        calculateMissingGeometry(cube);
-        // scene.add(cube);
-        const material = getMaterialXTexture(radianceTexture, irradianceTexture);
-        cube.material = material;
-        updateDynamicUniforms(cube, camera);
-        scene.add(cube);
-        gl.render(scene, camera);
+        if (mesh) {
+          const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
+          mesh.material = material;
+          updateDynamicUniforms(mesh, camera);
+          scene.add(mesh);
+          gl.render(scene, camera);
+        }
       } catch (error) {
         console.error('Error loading textures:', error);
         throw error;
@@ -89,6 +99,7 @@ export default function Scene({ onControlsChange }: { onControlsChange: (e: any)
     newTexture.magFilter = THREE.LinearFilter;
     newTexture.generateMipmaps = true;
     newTexture.needsUpdate = true;
+    newTexture.flipY = false;
 
     return newTexture;
   };

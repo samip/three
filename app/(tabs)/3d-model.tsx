@@ -1,8 +1,11 @@
 import Scene from '@/components/Scene';
+import { calculateMissingGeometry } from '@/lib/Mesh';
 import { OrbitControls } from '@react-three/drei/native';
 import { Canvas } from '@react-three/fiber/native';
 import { useRef } from 'react';
 import { View } from 'react-native';
+import * as THREE from 'three';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 type Light = {
   position: [number, number, number];
@@ -12,17 +15,17 @@ type Light = {
 
 const ThreeDModelScreen = () => {
   const orbitControlsRef = useRef<any>(null);
-
-  const lights: Light[] = [
-    { position: [500, 10, 15], intensity: 1, castShadow: true },
-    { position: [-100, 10, 15], intensity: 1, castShadow: false },
-    { position: [1, 10, 15], intensity: 1, castShadow: false },
-  ];
-
   const onControlsChangeEventHandlers = useRef<((e: any) => void)[]>([]);
 
+  const getCube = () => {
+    const geometry = new THREE.IcosahedronGeometry(30);
+    const indexedGeometry = mergeVertices(geometry);
+    const cube = new THREE.Mesh(indexedGeometry);
+    calculateMissingGeometry(cube);
+    return cube;
+  };
+
   const addOnControlsChangeEventHandler = (handler: (e: any) => void) => {
-    console.log('Adding handler', handler);
     onControlsChangeEventHandlers.current.push(handler);
   };
 
@@ -35,16 +38,8 @@ const ThreeDModelScreen = () => {
   const renderPigCanvas = () => {
     return (
       <Canvas shadows>
-        {lights.map((light, index) => (
-          <directionalLight
-            key={index}
-            position={light.position}
-            intensity={light.intensity}
-            castShadow={light.castShadow}
-          />
-        ))}
         <OrbitControls ref={orbitControlsRef} onChange={onControlsChange} enableZoom={true} />
-        <Scene onControlsChange={addOnControlsChangeEventHandler}></Scene>
+        <Scene onControlsChange={addOnControlsChangeEventHandler} mesh={getCube()} />
         {/* <Pig onControlsChange={addOnControlsChangeEventHandler}></Pig> */}
       </Canvas>
     );

@@ -6,11 +6,12 @@ import fShader from "./shaders/gltf_pbr_gold/fragment";
 
 export function getMaterialXTexture(
   radianceTexture: THREE.Texture,
-  irradianceTexture: THREE.Texture
+  irradianceTexture: THREE.Texture,
+  lightData: any[]
 ) {
   const otherUniforms = {
-    u_numActiveLightSources: { value: 0 },
-    // u_lightData: { value: lightData },
+    u_numActiveLightSources: { value: lightData.length },
+    u_lightData: { value: lightData },
     u_envMatrix: {
       value: new THREE.Matrix4().makeRotationY(Math.PI / 2),
     },
