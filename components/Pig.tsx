@@ -9,7 +9,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
   camera.position.set(15, 0, 0);
-  const asset = Asset.fromModule(require('../assets/models/Pig.glb'));
+  const asset = Asset.fromModule(require('../assets/models/shark.glb'));
   const gltf = useGLTF(asset.uri);
   const sceneRef = useRef<THREE.Object3D>(gltf.scene);
   const [_colorMap, bricksMap] = useTexture(['/assets/textures/netmesh.png', '/assets/textures/bricks.jpg']);
@@ -44,7 +44,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     if (!(mesh.material instanceof THREE.ShaderMaterial)) {
       return;
     }
-    // updateDynamicUniforms(mesh, camera);
+    updateDynamicUniforms(mesh, camera);
   };
 
   onControlsChange((e: any) => { controlsChanged(e) });
@@ -67,7 +67,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
 
   useEffect(() => {
     const asyncFunc = async () => {
-      // await setMaterial(mesh, bricksMap, camera);
+      await setMaterial(mesh, bricksMap, camera);
     };
     setTimeout(asyncFunc, 1000);
   });

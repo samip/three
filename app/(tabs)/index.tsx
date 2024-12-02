@@ -4,7 +4,7 @@ import Matrix from '@/components/Matrix';
 import Scene from '@/components/Scene';
 import { Canvas } from '@react-three/fiber';
 import { View } from 'react-native';
-import { THREE } from 'expo-three';
+import * as THREE from 'three';
 
 export default function HomeScreen() {
   const sphereGeometry = new THREE.SphereGeometry(5);
