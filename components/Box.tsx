@@ -1,7 +1,7 @@
 import { Gyroscope } from 'expo-sensors';
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
-import * as THREE from 'three';
+import { THREE } from 'expo-three';
 
 interface BoxProps {
   position: [number, number, number];

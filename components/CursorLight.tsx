@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import { THREE  } from 'expo-three';
 
 export default function CursorLight() {
   const { camera, size } = useThree();
