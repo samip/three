@@ -3,8 +3,8 @@ import CursorLight from '@/components/CursorLight';
 import Matrix from '@/components/Matrix';
 import Scene from '@/components/Scene';
 import { Canvas } from '@react-three/fiber';
+import { THREE } from 'expo-three';
 import { View } from 'react-native';
-import * as THREE from 'three';
 
 export default function HomeScreen() {
   const sphereGeometry = new THREE.SphereGeometry(5);

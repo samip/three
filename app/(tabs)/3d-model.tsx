@@ -2,9 +2,9 @@ import Scene from '@/components/Scene';
 import { calculateMissingGeometry } from '@/lib/Mesh';
 import { OrbitControls } from '@react-three/drei/native';
 import { Canvas } from '@react-three/fiber/native';
+import { THREE } from 'expo-three';
 import { useRef } from 'react';
 import { View } from 'react-native';
-import * as THREE from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 type Light = {

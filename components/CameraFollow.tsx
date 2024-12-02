@@ -1,7 +1,7 @@
 import { OrbitControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { THREE } from 'expo-three';
 import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
 
 interface CameraFollowProps {
   children: React.ReactNode;
