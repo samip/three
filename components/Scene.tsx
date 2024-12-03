@@ -86,7 +86,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
       }
     });
 
-    orbitControls.autoRotate = true;
+    orbitControls.autoRotate = false;
     orbitControls.target.set(0, 0, 0);
     return () => {
       orbitControls.dispose();
@@ -106,7 +106,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     newTexture.anisotropy = capabilities.getMaxAnisotropy();
     newTexture.minFilter = THREE.LinearMipmapLinearFilter;
     newTexture.magFilter = THREE.LinearFilter;
-    newTexture.generateMipmaps = true;
+    newTexture.generateMipmaps = false;
     newTexture.needsUpdate = true;
     newTexture.flipY = false;
 

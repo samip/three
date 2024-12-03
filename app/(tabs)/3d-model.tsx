@@ -2,22 +2,26 @@ import Scene from '@/components/Scene';
 import { calculateMissingGeometry } from '@/lib/Mesh';
 import { Canvas } from '@react-three/fiber/native';
 import { THREE } from 'expo-three';
+import { useRef } from 'react';
 import { View } from 'react-native';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export default function ThreeDModelScreen() {
-  const getCube = () => {
+
+  const getMesh = () => {
     const geometry = new THREE.IcosahedronGeometry(30);
     const indexedGeometry = mergeVertices(geometry);
-    const cube = new THREE.Mesh(indexedGeometry);
-    calculateMissingGeometry(cube);
-    return cube;
+    const mesh = new THREE.Mesh(indexedGeometry);
+    calculateMissingGeometry(mesh);
+    return mesh;
   };
+
+  const mesh = useRef<THREE.Mesh>(getMesh());
 
   return (
     <View style={{ flex: 1 }}>
       <Canvas shadows>
-        <Scene mesh={getCube()} />
+        <Scene mesh={mesh.current} />
         {/* <primitive object={getCube()} /> */}
         {/* <Pig onControlsChange={addOnControlsChangeEventHandler}></Pig> */}
       </Canvas>
