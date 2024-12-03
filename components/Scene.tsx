@@ -67,7 +67,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
         mesh.material = material;
         camera.position.set(100, 0, 0);
         // needs to be called after camera position is set
-        orbitControlsRef.current.update();
+        controls.current.update();
         updateDynamicUniforms(mesh, camera);
         scene.add(mesh);
         renderNeeded.current = true;
@@ -77,9 +77,23 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     if (!radianceTextureRef.current || !irradianceTextureRef.current) {
       loadEnvTextures();
     }
+
+    const orbitControls = controls.current;
+    orbitControls.addEventListener('change', () => {
+      renderNeeded.current = true;
+      if (mesh) {
+        updateDynamicUniforms(mesh, camera);
+      }
+    });
+
+    orbitControls.autoRotate = true;
+    orbitControls.target.set(0, 0, 0);
+    return () => {
+      orbitControls.dispose();
+    };
   }, [gl.capabilities, scene, camera, mesh, lightData]);
 
-  const prepareEnvTexture = (texture: THREE.Texture, _capabilities: THREE.WebGLCapabilities) => {
+  const prepareEnvTexture = (texture: THREE.Texture, capabilities: THREE.WebGLCapabilities) => {
     let newTexture = new THREE.DataTexture(
       texture.image.data,
       texture.image.width,
@@ -89,7 +103,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     );
     newTexture.wrapS = THREE.RepeatWrapping;
     // TODO: figure out why this doesn't work on Android
-    // newTexture.anisotropy = capabilities.getMaxAnisotropy();
+    newTexture.anisotropy = capabilities.getMaxAnisotropy();
     newTexture.minFilter = THREE.LinearMipmapLinearFilter;
     newTexture.magFilter = THREE.LinearFilter;
     newTexture.generateMipmaps = true;
