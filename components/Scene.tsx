@@ -22,6 +22,10 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     null,
   ) as MutableRefObject<THREE.Texture | null>;
 
+  const backgroundTextureRef = useRef<THREE.Texture | null>(
+    null,
+  ) as MutableRefObject<THREE.Texture | null>;
+
   const cube = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
