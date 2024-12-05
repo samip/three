@@ -20,6 +20,7 @@ export default function Scene() {
   );
   scene.add(cube);
 
+  // Initial setup effect - runs once on mount
   useEffect(() => {
 
     const setBackgroundTexture = (texture: THREE.Texture) => {

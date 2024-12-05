@@ -2,6 +2,8 @@ node_modules/
 .expo/
 .gradle/
 .idea/
+*.Identifier
+credentials.json
 android/
 ios/
 
@@ -45,7 +47,7 @@ yarn-error.*
 *.tsbuildinfo
 
 remote-profile/
-assets/
+assets/models
 *.swp
 entry.bundle*
 # @end expo-cli
