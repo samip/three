@@ -25,7 +25,6 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     sceneRef.current.traverse((child: THREE.Object3D) => {
       if (!mesh && child instanceof THREE.Mesh) {
         mesh = child;
-        console.log('Mesh found:', child);
       }
     });
     if (!mesh) {

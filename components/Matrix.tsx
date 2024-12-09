@@ -1,9 +1,7 @@
 import { useThree } from '@react-three/fiber';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { AxesHelper, GridHelper } from 'three';
-import { animateTexture } from './LiveTexture';
-
 interface MatrixProps {
   xSize: number;
   ySize: number;
@@ -19,20 +17,28 @@ export default function Matrix({
   padding = 0,
   renderHelpers = false,
 }: MatrixProps) {
-  const { scene } = useThree();
-  if (renderHelpers) {
-    const gridHelper = new GridHelper(
-      Math.max(xSize, ySize),
-      Math.max(xSize, ySize),
-      0xff0000,
-      'teal',
-    );
-    gridHelper.position.set(3.5, 3.5, 0);
-    gridHelper.rotation.set(Math.PI / 2, 0, 0);
-    scene.add(gridHelper);
-    const axesHelper = new AxesHelper(xSize);
-    scene.add(axesHelper);
-  }
+  const { scene, gl } = useThree();
+
+  useEffect(() => {
+    if (renderHelpers) {
+      const gridHelper = new GridHelper(
+        Math.max(xSize, ySize),
+        Math.max(xSize, ySize),
+        0xff0000,
+        'teal',
+      );
+      gridHelper.position.set(3.5, 3.5, 0);
+      gridHelper.rotation.set(Math.PI / 2, 0, 0);
+      scene.add(gridHelper);
+      const axesHelper = new AxesHelper(xSize);
+      scene.add(axesHelper);
+    }
+
+    return () => {
+      gl.dispose();
+      scene.clear();
+    };
+  }, [renderHelpers, xSize, ySize]);
 
   /*
   const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
@@ -64,11 +70,12 @@ export default function Matrix({
       //mesh.material.map = alphaMap;
       // mesh.material.map = colorMap;
       // mesh.material.map = diagonalRainbow;
-      animateTexture(mesh);
+      // animateTexture(mesh);
       // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
       // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
     }
     if (x === 0 && y === 0 && mesh.material instanceof THREE.MeshStandardMaterial) {
+      // mesh.material = MeshReflectorMaterial();
       // mesh.material.transparent = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
     }
   };
@@ -115,6 +122,7 @@ export default function Matrix({
 
   return (
     <React.Fragment>
+
       {boxes.map((row, x) => row.map((mesh, y) => <primitive key={`${x}-${y}`} object={mesh} />))}
     </React.Fragment>
   );

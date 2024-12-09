@@ -47,6 +47,7 @@ export function getMaterialXTexture(
 }
 
 export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
+  camera.updateMatrixWorld(true);
   const normalMat = new THREE.Matrix3();
   const viewProjMat = new THREE.Matrix4();
   const worldViewPos = new THREE.Vector3();

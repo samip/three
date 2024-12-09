@@ -9,7 +9,7 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
-  const renderNeeded = useRef(true);
+  const renderNeeded = useRef(0);
   const [lightData] = useState([
     { position: [0, 0, 100], intensity: 1, castShadow: true, direction: [0, 0, 0] },
   ]);
@@ -26,27 +26,24 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     null,
   ) as MutableRefObject<THREE.Texture | null>;
 
-  const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-  );
-  scene.add(cube);
-
   // Initial setup effect - runs once on mount
   useEffect(() => {
+    const orbitControls = new OrbitControls(camera, gl.domElement);
     const onChange = () => {
-      renderNeeded.current = true;
       if (mesh) {
         updateDynamicUniforms(mesh, camera);
+        setRenderNeeded(true);
       }
     };
-    const orbitControls = new OrbitControls(camera, gl.domElement);
+
     orbitControls.autoRotate = false;
     orbitControls.target.set(0, 0, 0);
     orbitControls.addEventListener('change', onChange);
+    setRenderNeeded(true);
+    orbitControls.update();
+    // Trigger initial renderk
 
     return () => {
-      console.log('unmounting');
       scene.clear();
       orbitControls.removeEventListener('change', onChange);
       orbitControls.dispose();
@@ -58,7 +55,18 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     if (!radianceTextureRef.current || !irradianceTextureRef.current) {
       loadEnvTextures();
     }
+
+    return () => {
+      scene.clear();
+    };
   }, [gl.capabilities, scene, camera, mesh, lightData]);
+
+  useFrame(() => {
+    if (renderNeeded.current) {
+      gl.render(scene, camera);
+      renderNeeded.current -= 1;
+    }
+  }, 1);
 
   const loadEnvTextures = async () => {
     const hdrLoader = new RGBELoader();
@@ -78,16 +86,25 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     radianceTextureRef.current = processedRadiance;
     irradianceTextureRef.current = processedIrradiance;
     setBackgroundTexture(radianceTexture);
-    renderNeeded.current = true;
     if (mesh) {
-      const material = getMaterialXTexture(radianceTexture, irradianceTexture, lightData);
+      const material = getMaterialXTexture(
+        radianceTextureRef.current,
+        irradianceTextureRef.current,
+        lightData,
+      );
       mesh.material = material;
       camera.position.set(100, 0, 0);
-      // needs to be called after camera position is set
+      camera.lookAt(0, 0, 0);
       updateDynamicUniforms(mesh, camera);
       scene.add(mesh);
-      renderNeeded.current = true;
-      gl.render(scene, camera);
+    }
+    setRenderNeeded(true);
+  };
+  const setRenderNeeded = (needed: boolean = true) => {
+    if (needed) {
+      renderNeeded.current = 10;
+    } else {
+      renderNeeded.current = 0;
     }
   };
 
