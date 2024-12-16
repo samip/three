@@ -12,7 +12,10 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
   const asset = Asset.fromModule(require('../assets/models/shark.glb'));
   const gltf = useGLTF(asset.uri);
   const sceneRef = useRef<THREE.Object3D>(gltf.scene);
-  const [_colorMap, bricksMap] = useTexture(['/assets/textures/netmesh.png', '/assets/textures/bricks.jpg']);
+  const [_colorMap, bricksMap] = useTexture([
+    '/assets/textures/netmesh.png',
+    '/assets/textures/bricks.jpg',
+  ]);
 
   const mesh = useMemo(() => {
     if (!sceneRef.current) {
@@ -31,12 +34,10 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     return mesh;
   }, [sceneRef]);
 
-
-
   const controlsChanged = (e: any) => {
     const camera = e.target.object;
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
-  
+
     if (!mesh) {
       return;
     }
@@ -47,8 +48,9 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     updateDynamicUniforms(mesh, camera);
   };
 
-  onControlsChange((e: any) => { controlsChanged(e) });
-
+  onControlsChange((e: any) => {
+    controlsChanged(e);
+  });
 
   function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
     if (!(mesh?.material instanceof THREE.ShaderMaterial)) {
@@ -58,7 +60,7 @@ export default function Pig({ onControlsChange }: { onControlsChange: (e: any) =
     material.uniforms.modelMatrix.value.copy(mesh.matrixWorld);
     material.uniforms.viewMatrix.value.copy(camera.matrixWorldInverse);
     material.uniforms.projectionMatrix.value.copy(camera.projectionMatrix);
-    
+
     // Update normal matrix
     const normalMatrix = new THREE.Matrix3();
     normalMatrix.getNormalMatrix(mesh.matrixWorld);

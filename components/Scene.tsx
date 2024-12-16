@@ -22,7 +22,6 @@ export default function Scene() {
 
   // Initial setup effect - runs once on mount
   useEffect(() => {
-
     const setBackgroundTexture = (texture: THREE.Texture) => {
       const bgTexture = new THREE.DataTexture(
         texture.image.data,
@@ -63,7 +62,6 @@ export default function Scene() {
 
     loadEnvTextures();
   }, [gl.capabilities, scene]);
-
 
   const prepareEnvTexture = (texture: THREE.Texture, capabilities: THREE.WebGLCapabilities) => {
     let newTexture = new THREE.DataTexture(
