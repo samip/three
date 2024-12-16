@@ -8,22 +8,10 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   const { camera, gl, scene } = useThree();
-  const renderNeeded = useRef(0);
+  const renderNeeded = useRef(false);
   const [lightData] = useState([
     { position: [0, 0, 100], intensity: 1, castShadow: true, direction: [0, 0, 0] },
   ]);
-
-  const radianceTextureRef = useRef<THREE.Texture | null>(
-    null,
-  ) as MutableRefObject<THREE.Texture | null>;
-
-  const irradianceTextureRef = useRef<THREE.Texture | null>(
-    null,
-  ) as MutableRefObject<THREE.Texture | null>;
-
-  const backgroundTextureRef = useRef<THREE.Texture | null>(
-    null,
-  ) as MutableRefObject<THREE.Texture | null>;
 
   // Initial setup effect - runs once on mount
   useEffect(() => {
@@ -34,13 +22,11 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
         setRenderNeeded(true);
       }
     };
-
     orbitControls.autoRotate = false;
     orbitControls.target.set(0, 0, 0);
     orbitControls.addEventListener('change', onChange);
     setRenderNeeded(true);
     orbitControls.update();
-    // Trigger initial renderk
 
     return () => {
       scene.clear();
@@ -51,9 +37,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
 
   // Separate effect for texture loading
   useEffect(() => {
-    if (!radianceTextureRef.current || !irradianceTextureRef.current) {
-      loadEnvTextures();
-    }
+    loadEnvTextures();
 
     return () => {
       scene.clear();
@@ -63,9 +47,9 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
   useFrame(() => {
     if (renderNeeded.current) {
       gl.render(scene, camera);
-      renderNeeded.current -= 1;
+      setRenderNeeded(false);
     }
-  }, 1);
+  }, 1); // 1 = render priority. Setting render priority disables automatic rendering.
 
   const loadEnvTextures = async () => {
     const hdrLoader = new RGBELoader();
@@ -82,13 +66,11 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
 
     const processedRadiance = prepareEnvTexture(radianceTexture, capabilities);
     const processedIrradiance = prepareEnvTexture(irradianceTexture, capabilities);
-    radianceTextureRef.current = processedRadiance;
-    irradianceTextureRef.current = processedIrradiance;
     setBackgroundTexture(radianceTexture);
     if (mesh) {
       const material = getMaterialXTexture(
-        radianceTextureRef.current,
-        irradianceTextureRef.current,
+        processedRadiance,
+        processedIrradiance,
         lightData,
       );
       mesh.material = material;
@@ -99,12 +81,9 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     }
     setRenderNeeded(true);
   };
+
   const setRenderNeeded = (needed: boolean = true) => {
-    if (needed) {
-      renderNeeded.current = 10;
-    } else {
-      renderNeeded.current = 0;
-    }
+    renderNeeded.current = needed;
   };
 
   const setBackgroundTexture = (texture: THREE.Texture) => {
@@ -115,9 +94,9 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
       THREE.RGBAFormat,
       texture.type,
     ).copy(texture);
+
     bgTexture.mapping = THREE.EquirectangularReflectionMapping;
-    backgroundTextureRef.current = bgTexture;
-    scene.background = backgroundTextureRef.current;
+    scene.background = bgTexture;
   };
 
   const prepareEnvTexture = (texture: THREE.Texture, capabilities: THREE.WebGLCapabilities) => {
