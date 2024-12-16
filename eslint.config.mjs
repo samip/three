@@ -17,7 +17,8 @@ export default [
   {
     ignores: ['**/tools/', '**/lib/', '**/dist/', '**/metro.config.js'],
   },
-  ...compat.extends('expo', 'prettier'),
+  // ...compat.extends('expo', 'prettier'),
+  ...compat.extends('prettier'),
   {
     plugins: {
       '@typescript-eslint': typescript,
