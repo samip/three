@@ -1,7 +1,6 @@
 import CameraFollow from '@/components/CameraFollow';
 import CursorLight from '@/components/CursorLight';
 import Matrix from '@/components/Matrix';
-import Scene from '@/components/Scene';
 import { Canvas } from '@react-three/fiber';
 import { THREE } from 'expo-three';
 import { View } from 'react-native';

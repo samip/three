@@ -7,7 +7,6 @@ import { THREE } from 'expo-three';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { camera, gl, scene } = useThree();
   const renderNeeded = useRef(0);
   const [lightData] = useState([
@@ -48,7 +47,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
       orbitControls.removeEventListener('change', onChange);
       orbitControls.dispose();
     };
-  }, []); // Empty dependency array = run once on mount
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   // Separate effect for texture loading
   useEffect(() => {
@@ -59,7 +58,7 @@ export default function Scene({ mesh }: { mesh?: THREE.Mesh }) {
     return () => {
       scene.clear();
     };
-  }, [gl.capabilities, scene, camera, mesh, lightData]);
+  }, [gl.capabilities, scene, camera, mesh, lightData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFrame(() => {
     if (renderNeeded.current) {

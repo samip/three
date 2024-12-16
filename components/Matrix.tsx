@@ -38,7 +38,7 @@ export default function Matrix({
       gl.dispose();
       scene.clear();
     };
-  }, [renderHelpers, xSize, ySize]);
+  }, [renderHelpers, xSize, ySize, gl, scene]);
 
   /*
   const [colorMap, alphaMap, diagonal, diagonalRainbow] = useTexture([
@@ -122,7 +122,6 @@ export default function Matrix({
 
   return (
     <React.Fragment>
-
       {boxes.map((row, x) => row.map((mesh, y) => <primitive key={`${x}-${y}`} object={mesh} />))}
     </React.Fragment>
   );
