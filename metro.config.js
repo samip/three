@@ -4,7 +4,7 @@ const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
 
-[("js", "jsx", "json", "ts", "tsx", "mjs", "wasm", "data", "json")].forEach(
+[("js", "jsx", "json", "ts", "tsx", "mjs")].forEach(
   (ext) => {
     if (config.resolver.sourceExts.indexOf(ext) === -1) {
       config.resolver.sourceExts.push(ext);
