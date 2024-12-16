@@ -1,7 +1,7 @@
-import { OrbitControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { THREE } from 'expo-three';
 import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface CameraFollowProps {
   children: React.ReactNode;
@@ -48,18 +48,17 @@ export default function CameraFollow({ children, padding = 1.2 }: CameraFollowPr
     });
   }, [camera, padding, children, scene]);
 
-  const handleCameraMove = () => {
+  const _handleCameraMove = () => {
     // Actions to perform whenever the camera moves
-    // console.log(camera.position);
   };
 
-  const handleCameraMoveEnd = () => {
+  const _handleCameraMoveEnd = () => {
     // Actions to perform when the camera stops moving
   };
 
   return (
     <>
-      <OrbitControls ref={controlsRef} onChange={handleCameraMove} onEnd={handleCameraMoveEnd} />
+      {/* <OrbitControls ref={controlsRef} onChange={handleCameraMove} onEnd={handleCameraMoveEnd} /> */}
       <group ref={groupRef}>{children}</group>
     </>
   );

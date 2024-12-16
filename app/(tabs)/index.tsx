@@ -1,11 +1,9 @@
 import CameraFollow from '@/components/CameraFollow';
 import CursorLight from '@/components/CursorLight';
 import Matrix from '@/components/Matrix';
-import Scene from '@/components/Scene';
 import { Canvas } from '@react-three/fiber';
+import { THREE } from 'expo-three';
 import { View } from 'react-native';
-import * as THREE from 'three';
-
 export default function HomeScreen() {
   const sphereGeometry = new THREE.SphereGeometry(5);
   const material = new THREE.MeshStandardMaterial({
@@ -21,7 +19,6 @@ export default function HomeScreen() {
       <Canvas style={{ flex: 1, backgroundColor: '#3b3b3b' }}>
         <CursorLight />
         <CameraFollow padding={1.2}>
-          <Scene />
           <Matrix padding={0.1} xSize={8} ySize={8}>
             {sphereMesh}
           </Matrix>

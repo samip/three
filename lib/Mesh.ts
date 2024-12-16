@@ -1,19 +1,7 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
-export function updateDynamicUniforms(mesh: THREE.Mesh, camera: THREE.Camera) {
-  const material = mesh.material as THREE.ShaderMaterial;
-  material.uniforms.modelMatrix.value.copy(mesh.matrixWorld);
-  material.uniforms.viewMatrix.value.copy(camera.matrixWorldInverse);
-  material.uniforms.projectionMatrix.value.copy(camera.projectionMatrix);
-
-  // Update normal matrix
-  const normalMatrix = new THREE.Matrix3();
-  normalMatrix.getNormalMatrix(mesh.matrixWorld);
-  material.uniforms.normalMatrix.value.copy(normalMatrix);
-}
-
-function calculateMissingGeometry(mesh: THREE.Mesh) {
-  const flipV = true;
+export function calculateMissingGeometry(mesh: THREE.Mesh) {
+  const flipV = false;
   if (!mesh.geometry.attributes.uv) {
     const posCount = mesh.geometry.attributes.position.count;
     const uvs = [];
@@ -28,7 +16,10 @@ function calculateMissingGeometry(mesh: THREE.Mesh) {
         uvs.push((pos[i * 3] - bsphere.center.x) / bsphere.radius);
         uvs.push((pos[i * 3 + 1] - bsphere.center.y) / bsphere.radius);
       }
-      mesh.geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+      mesh.geometry.setAttribute(
+        "uv",
+        new THREE.BufferAttribute(new Float32Array(uvs), 2)
+      );
     }
   } else if (flipV) {
     const uvCount = mesh.geometry.attributes.position.count;
@@ -42,16 +33,18 @@ function calculateMissingGeometry(mesh: THREE.Mesh) {
   if (!mesh.geometry.attributes.normal) {
     mesh.geometry.computeVertexNormals();
   }
-
   if (mesh.geometry.getIndex()) {
     if (!mesh.geometry.attributes.tangent) {
       mesh.geometry.computeTangents();
     }
   }
+
   // Use default MaterialX naming convention.
   // TODO: figure out what these are for (MaterialX?)
-  // mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
-  // mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
-  // mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
-  // mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
+  mesh.geometry.attributes.i_position = mesh.geometry.attributes.position;
+  mesh.geometry.attributes.i_normal = mesh.geometry.attributes.normal;
+  if (mesh.geometry.attributes.tangent) {
+    mesh.geometry.attributes.i_tangent = mesh.geometry.attributes.tangent;
+  }
+  mesh.geometry.attributes.i_texcoord_0 = mesh.geometry.attributes.uv;
 }

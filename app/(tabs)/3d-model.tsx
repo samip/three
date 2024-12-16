@@ -1,58 +1,30 @@
-import { OrbitControls } from '@react-three/drei/native';
+import Scene from '@/components/Scene';
+import { calculateMissingGeometry } from '@/lib/Mesh';
 import { Canvas } from '@react-three/fiber/native';
-import { Suspense, useRef } from 'react';
-
+import { THREE } from 'expo-three';
+import { useRef } from 'react';
 import { View } from 'react-native';
-import Pig from '../../components/Pig';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
-type Light = {
-  position: [number, number, number];
-  intensity: number;
-  castShadow: boolean;
-};
+export default function ThreeDModelScreen() {
 
-const ThreeDModelScreen = () => {
-  const orbitControlsRef = useRef<typeof OrbitControls>(null);
-
-  const lights: Light[] = [
-    { position: [500, 10, 15], intensity: 1, castShadow: true },
-    { position: [-100, 10, 15], intensity: 1, castShadow: false },
-    { position: [1, 10, 15], intensity: 1, castShadow: false },
-  ];
-
-  const onControlsChangeEventHandlers = useRef<((e: any) => void)[]>([]);
-
-  const addOnControlsChangeEventHandler = (handler: (e: any) => void) => {
-    console.log('Adding handler', handler);
-    onControlsChangeEventHandlers.current.push(handler);
+  const getMesh = () => {
+    const geometry = new THREE.IcosahedronGeometry(30);
+    const indexedGeometry = mergeVertices(geometry);
+    const mesh = new THREE.Mesh(indexedGeometry);
+    calculateMissingGeometry(mesh);
+    return mesh;
   };
 
-  const onControlsChange = (e: any) => {
-    onControlsChangeEventHandlers.current.forEach((handler) => {
-      handler(e);
-    });
-  };
+  const mesh = useRef<THREE.Mesh>(getMesh());
 
-  const renderPigCanvas = () => {
-    return (
+  return (
+    <View style={{ flex: 1 }}>
       <Canvas shadows>
-        {lights.map((light, index) => (
-          <directionalLight
-            key={index}
-            position={light.position}
-            intensity={light.intensity}
-            castShadow={light.castShadow}
-          />
-        ))}
-        <OrbitControls ref={orbitControlsRef} onChange={onControlsChange} enableZoom={true} />
-        <Suspense fallback={null}>
-          <Pig onControlsChange={addOnControlsChangeEventHandler} />
-        </Suspense>
+        <Scene mesh={mesh.current} />
+        {/* <primitive object={getCube()} /> */}
+        {/* <Pig onControlsChange={addOnControlsChangeEventHandler}></Pig> */}
       </Canvas>
-    );
-  };
-
-  return <View style={{ flex: 1 }}>{renderPigCanvas()}</View>;
-};
-
-export default ThreeDModelScreen;
+    </View>
+  );
+}
