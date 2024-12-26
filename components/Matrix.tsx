@@ -2,6 +2,7 @@ import { useThree } from '@react-three/fiber';
 import React, { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { AxesHelper, GridHelper } from 'three';
+import { LiveMaterial } from './LiveMaterial';
 interface MatrixProps {
   xSize: number;
   ySize: number;
@@ -64,20 +65,7 @@ export default function Matrix({
   };
 
   const onChildLoad = (mesh: THREE.Mesh, x: number, y: number) => {
-    if (mesh.material instanceof THREE.MeshStandardMaterial) {
-      mesh.material.transparent = true;
-      //mesh.material.alphaMap = alphaMap;
-      //mesh.material.map = alphaMap;
-      // mesh.material.map = colorMap;
-      // mesh.material.map = diagonalRainbow;
-      // animateTexture(mesh);
-      // mesh.material.alphaMap = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
-      // mesh.material.map = generateLiveTexture(LiveTextureType.DIAGONAL);
-    }
-    if (x === 0 && y === 0 && mesh.material instanceof THREE.MeshStandardMaterial) {
-      // mesh.material = MeshReflectorMaterial();
-      // mesh.material.transparent = generateLiveTexture(LiveTextureType.DIAGONAL, 1.0);
-    }
+    mesh.material = new LiveMaterial();
   };
 
   // scale mesh to fit in 1x1x1 cube
